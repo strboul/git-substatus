@@ -26,6 +26,12 @@ def cmdarg():
     parser.add_argument("path", help="path where you see status. Current directory will be displayed if left empty.")
     args = parser.parse_args()
     args.path
+    # return current if path is empty:
+    if args.path is not None:
+        path_arg = arg
+    else:
+        path_arg = "."
+    path_arg
 
 def repo(dirlist):
     assert isinstance(dirlist, list)
@@ -36,6 +42,7 @@ def repo(dirlist):
 
 def status(repolist):
     assert isinstance(repolist, list)
+
     codes = {
         'new': pygit2.GIT_STATUS_WT_NEW, #128
         'modified': pygit2.GIT_STATUS_WT_MODIFIED, #256
@@ -46,29 +53,27 @@ def status(repolist):
 
     status = []
     for repo in repolist:
-        status.append(repo.status())
+        status.append([repo.workdir, repo.status()])
 
     status_items = []
+    info = []
     for stat in status:
-        items = list(stat.items())
-        for st in range(0, len(items)):
-            single_items = list(items[st])
-            code_value = single_items[1]
-            if code_value in codes.values():
-                status_items.append([single_items[0], inverse_codes[code_value]])
+        workdir = stat[0]
+        items = list(stat[1].items())
+        for s in range(0, len(items)):
+            single_items = list(items[s])
+            value = single_items[1]
+            if value in codes.values():
+                status_items.append([single_items[0], inverse_codes[value]])
             else:
                 continue
+        info.append([workdir, status_items[-1]])
 
-    print(status_items)
-    return status_items
+    print(info)
+    return info
 
 def main():
-    # arg = cmdarg()
-    #
-    # if arg is not None:
-    #     path_arg = arg
-    # else:
-    #     path_arg = "."
+    # path_arg = cmdarg()
     path_arg = "~/proj"
     path = os.path.expanduser(path_arg)
     dirs = get_gitdirs(path)
