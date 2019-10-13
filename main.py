@@ -4,7 +4,7 @@ import os
 import pygit2
 import argparse
 
-def get_gitdirs(path):
+def get_git_dirs(path):
     count = 0
     var = []
     for root, dirs, files in os.walk(path):
@@ -21,26 +21,37 @@ def get_gitdirs(path):
             break
     return var
 
+
 def cmdarg():
-    parser = argparse.ArgumentParser(description="See subfolders' git status")
-    parser.add_argument("path", help="path where you see status. Current directory will be displayed if left empty.")
+    '''
+    Command line arguments
+    Returns path argument
+    '''
+    parser = argparse.ArgumentParser(description = "See subfolders' git status")
+    parser.add_argument("path", help = "path indicating where you want to see substatuses. If left empty, current working directory will be chosen.")
     args = parser.parse_args()
-    args.path
-    # return current if path is empty:
+
+    ## return the current working directory 
+    ## if the path arg is empty:
     if args.path is not None:
-        path_arg = arg
+        ## check if dir exists:
+        if os.path.exists(args.path):
+            path_arg = args.path
+        else:
+            print("folder '%s' not exist" %(args.path))
+            raise FileNotFoundError
     else:
         path_arg = "."
-    path_arg
+    return path_arg
 
-def repo(dirlist):
+def as_pygit_repo(dirlist):
     assert isinstance(dirlist, list)
     repo = []
     for dir in dirlist:
         repo.append(pygit2.Repository(dir))
     return repo
 
-def status(repolist):
+def git_status(repolist):
     assert isinstance(repolist, list)
 
     codes = {
@@ -48,7 +59,7 @@ def status(repolist):
         'modified': pygit2.GIT_STATUS_WT_MODIFIED, #256
         'added': pygit2.GIT_STATUS_INDEX_MODIFIED #2
     }
-    # inversing is just more useful:
+    ## inversing is just more useful:
     inverse_codes = {v: k for k, v in codes.items()}
 
     status = []
@@ -73,12 +84,12 @@ def status(repolist):
     return info
 
 def main():
-    # path_arg = cmdarg()
-    path_arg = "~/proj"
-    path = os.path.expanduser(path_arg)
-    dirs = get_gitdirs(path)
-    repo_dirs = repo(dirs)
-    statuses = status(repo_dirs)
+    path_arg = cmdarg()
+    print(path_arg)
+    # full_path = os.path.expanduser(path_arg)
+    # dirs = get_git_dirs(full_path)
+    # repo_dirs = as_pygit_repo(dirs)
+    # statuses = git_status(repo_dirs)
     # print(statuses)
 
 if __name__ == "__main__":
