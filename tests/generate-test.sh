@@ -6,12 +6,9 @@
 ## that are possible situations which can be encountered 
 ## during the use of git-substatus.
 
-## create a project folder keeping the
-## individual project folders:
+## create a project folder keeping the individual project folders:
 mkdir -p test-project-folder
-
 cd test-project-folder
-
 ## --------------------------------------------------------
 ## projA
 ## scenario:
@@ -32,10 +29,9 @@ git init
 git add -A && git commit -m 'Initial commit'
 echo "watermelon" >> fruits.txt
 echo "spinach, lettuce" > vegetables.txt
+touch drinks.txt
 rm dairy.txt
-
 cd ..
-
 ## --------------------------------------------------------
 ## projB
 ## scenario:
@@ -72,11 +68,9 @@ cd projB
 touch work.txt
 git add -A && git commit -m 'Work'
 git fetch
-
 cd ..
 ## remove `remote` and `user1` folders of projB to declutter
 rm -rf projB-remote projB-user1
-
 ## --------------------------------------------------------
 ## projC
 ## scenario:
@@ -99,16 +93,12 @@ git checkout master
 echo "print('The quick brown fox jumps over the lazy dog')" > code.py
 git add -A && git commit -m 'Change to the quick brown fox'
 git merge new-branch
-
 cd ..
 ## Adding some extra non-git 
 ## folders (having no `.git` directory in it):
 mkdir -p proj-no-git1
 mkdir -p proj-no-git2
-
 printf "\n\n***script PWD (at current level):***: %s\n\n" $PWD
-
-echo " ========="
-echo " Completed"
-echo " =========\n"
-
+printf " =========\n"
+printf " Completed\n"
+printf " =========\n\n"

@@ -1,18 +1,45 @@
 # git-substatus
 
-A small Python 3 script to find the git status in subdirectories (e.g. a project/ folder) where I'd like to see what changes I have in the state of uncommitted/unpushed/unmerged.
+A small script to find the git status in subdirectories 
+(e.g. in a *common project folder*) where I'd like to see what changes has been done in the states of:
 
-Usage
++ changed
++ unpushed
++ unmerged
++ merge conflicts
+
+## Usage
+
 ```bash
-python3 main.py ~/proj_github
+git-substatus projects-folder
 ```
+
+Go to help with `git-substatus -h`.
+
+## Installation
+
+Place the `git-substatus.py` file into your PATH and set executable permissions:
+
+```bash
+curl -L https://raw.githubusercontent.com/strboul/git-substatus/master/git-substatus.py > /usr/local/bin/git-substatus && \
+chmod u+x /usr/local/bin/git-substatus
+```
+
+## Development
 
 Install requirements:
 ```bash
-pip install -r requirements.txt
+pip3 install -r requirements.txt
 ```
 
-A similar, more basic, bash command:
+Run tests:
 ```bash
-find . -maxdepth 1 -mindepth 1 -type d -exec sh -c '(echo {} && cd {} && git status -s && echo)' \;
+python3 -m unittest tests/test-main.py
 ```
+
+or (after generating test files with `./generate-test.sh`)
+
+```bash
+python3 git-substatus.py tests/test-project-folder
+```
+
