@@ -8,6 +8,8 @@ A small script to find the git status in subdirectories
 + unmerged
 + merge conflicts
 
+<!-- <GIF> -->
+
 ## Usage
 
 ```bash
@@ -25,6 +27,8 @@ curl -L https://raw.githubusercontent.com/strboul/git-substatus/master/git-subst
 chmod u+x /usr/local/bin/git-substatus
 ```
 
+Please note that *libgit2* `C` library and *pygit2* `Python` module are required.
+
 ## Development
 
 Install requirements:
@@ -32,13 +36,13 @@ Install requirements:
 pip3 install -r requirements.txt
 ```
 
-Run tests:
+After generating sample test directory with `./tests/generate-test.sh`, 
+run the unit tests:
 ```bash
-python3 -m unittest tests/test-main.py
+python3 -m unittest tests/test-git-substatus.py
 ```
 
-or (after generating test files with `./generate-test.sh`)
-
+Run manually:
 ```bash
 python3 git-substatus.py tests/test-project-folder
 ```
