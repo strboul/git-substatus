@@ -30,6 +30,7 @@ def fancy_text(text, color, style=None):
     }
     ansi_styles = {
         "bold" : "\033[1m",
+        "italic": "\033[3m",
         "underline": "\033[4m"
     }
     ansi_color = ansi_colors[color]
@@ -40,7 +41,12 @@ def fancy_text(text, color, style=None):
             ansi_style = ansi_styles[style]
     else:
         ansi_style = ""
-    str = "{style}{color}{text}{reset}".format(style=ansi_style, color=ansi_color, text=text, reset=reset)
+    str = "{style}{color}{text}{reset}".format(
+        style=ansi_style, 
+        color=ansi_color, 
+        text=text, 
+        reset=reset
+    )
     return str
 
 def get_basename(path):
@@ -72,10 +78,12 @@ def get_git_dirs(path):
 def cmdarg():
     '''
     Command line arguments
-    Returns path argument
+    Returns the path argument
+    Notes:
+    nargs='?' makes the argument optional.
     '''
     parser = argparse.ArgumentParser(description="See subfolders' git status")
-    parser.add_argument("path", help="path indicating where you want to see substatuses. If left empty, current working directory will be chosen.")
+    parser.add_argument("path", nargs="?", help="path indicating where you want to see substatuses. If left empty, current working directory will be chosen.")
     args = parser.parse_args()
 
     ## return the current working directory 
@@ -85,8 +93,8 @@ def cmdarg():
         if os.path.exists(args.path):
             path_arg = args.path
         else:
-            s = fancy_text("Error: cannot find the specified directory '%s'" %(args.path))
-            raise SystemExit(s)
+            s = "Error: cannot find the specified directory '%s'" %(args.path)
+            raise SystemExit(fancy_text(s, "red"))
     else:
         path_arg = "."
     return path_arg
@@ -112,24 +120,30 @@ def git_status(repolist):
     ## inversing status codes are also useful:
     inverse_status_codes = {v: k for k, v in status_codes.items()}
 
-    status = []
+    repo_status_list = []
     for repo in repolist:
-        status.append([repo.workdir, repo.status()])
+        try:
+            branch = repo.head.shorthand
+        except pygit2.GitError: ## return None if no branch found
+            branch = None
+        status = repo.status()
+        repo_status_list.append([repo.workdir, branch, status])
 
     info = []
-    for stat in status:
-        status_items = []
+    for stat in repo_status_list:
+        repo_status_items = []
         workdir = stat[0]
-        items = list(stat[1].items())
+        branch = stat[1]
+        items = list(stat[2].items())
         for s in range(0, len(items)):
             single_items = list(items[s])
             value = single_items[1]
             if value in status_codes.values():
-                status_items.append(inverse_status_codes[value])
+                repo_status_items.append(inverse_status_codes[value])
             else:
                 continue
         workdir_base = get_basename(workdir)
-        info.append([workdir_base, status_items])
+        info.append([workdir_base, branch, repo_status_items])
     
     ## sort list alphabetically by the workdir name:
     info = sorted(info, key=lambda i: i[0])
@@ -139,23 +153,33 @@ def git_status_print(statuses):
     assert isinstance(statuses, list)
     for status in statuses:
         dirname = status[0]
-        codes = status[1]
-        codes_counter = Counter(codes)
-        unique_codes = list(set(codes))
-        codes_fmt = []
-        for code in unique_codes:
-            count = codes_counter.get(code)
-            str = "{count} {code}".format(count=count,code=code)
-            codes_fmt.append(str)
-        collapsed_codes = ', '.join(codes_fmt)
-        print("•", end=" ")
-        print(fancy_text(dirname, "blue", style=["bold", "underline"]), end = ": ")
-        print(fancy_text(collapsed_codes, "yellow"))
+        branch = status[1]
+        codes = status[2]
+        if len(codes) > 0:
+            codes_counter = Counter(codes)
+            unique_codes = list(set(codes))
+            codes_fmt = []
+            for code in unique_codes:
+                count = codes_counter.get(code)
+                str = "{count} {code}".format(count=count,code=code)
+                codes_fmt.append(str)
+                collapsed_codes = ', '.join(codes_fmt)
+                codes_out = fancy_text(collapsed_codes, "yellow")
+        else:
+            codes_out = fancy_text("<sync>", "green", "italic")
+        out_fmt = "• {dirname} ({branch}) {codes_out}".format(
+            dirname=fancy_text(dirname, "blue", style=["bold", "underline"]),
+            branch=fancy_text(branch, "white"),
+            codes_out=codes_out
+        )
+        print(out_fmt)
 
 def main():
     path_arg = cmdarg()
     full_path = os.path.expanduser(path_arg)
     dirs = get_git_dirs(full_path)
+    if len(dirs) is 0:
+        return print("no sub git directories found")
     pygit_repos = as_pygit_repo(dirs)
     statuses = git_status(pygit_repos)
     git_status_print(statuses)

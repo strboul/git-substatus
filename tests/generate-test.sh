@@ -94,6 +94,30 @@ echo "print('The quick brown fox jumps over the lazy dog')" > code.py
 git add -A && git commit -m 'Change to the quick brown fox'
 git merge new-branch
 cd ..
+## --------------------------------------------------------
+## projD
+## scenario:
+## in a different branch than master but did not commit at all
+## --------------------------------------------------------
+mkdir -p projD
+cd projD
+git init
+git checkout -b new-branch
+touch file.txt
+cd ..
+## --------------------------------------------------------
+## projE
+## scenario:
+## in a different branch than master and at least one commit done
+## --------------------------------------------------------
+mkdir -p projE
+cd projE
+git init
+git checkout -b new-model-branch
+touch file.txt
+git add -A && git commit -m 'Add file'
+cd ..
+## --------------------------------------------------------
 ## Adding some extra non-git 
 ## folders (having no `.git` directory in it):
 mkdir -p proj-no-git1
