@@ -1,4 +1,3 @@
-
 #!/usr/bin/env python3
 
 ## standard modules:
@@ -13,12 +12,12 @@ import argparse
 ### UTILS ----
 ### ----------------------------------------------------------------- ###
 def fancy_text(text, color, style=None):
-    '''
+    """
     Examples:
     print(fancy_text("Grass", "green"))
     print(fancy_text("Sky", "blue", style="bold"))
     print(fancy_text("Apple", "red", style=["bold", "underline"]))
-    '''
+    """
     reset = "\033[0m"
     ansi_colors = {
         "black": "",
@@ -56,9 +55,9 @@ def get_basename(path):
 ### GIT CALLS ----
 ### ----------------------------------------------------------------- ###
 def get_git_dirs(path):
-    '''
-    Return only directories having a `.git` directory
-    '''
+    """
+    Only returns directories that have a `.git` directory
+    """
     count = 0
     var = []
     for root, dirs, files in os.walk(path):
@@ -75,13 +74,13 @@ def get_git_dirs(path):
             break
     return var
 
-def cmdarg():
-    '''
+def cmd_args():
+    """
     Command line arguments
     Returns the path argument
     Notes:
     nargs='?' makes the argument optional.
-    '''
+    """
     parser = argparse.ArgumentParser(description="See subfolders' git status")
     parser.add_argument("path", nargs="?", help="path indicating where you want to see substatuses. If left empty, current working directory will be chosen.")
     args = parser.parse_args()
@@ -94,6 +93,7 @@ def cmdarg():
             path_arg = args.path
         else:
             s = "Error: cannot find the specified directory '%s'" %(args.path)
+            ## send signal SIGHUP 1 and exit:
             raise SystemExit(fancy_text(s, "red"))
     else:
         path_arg = "."
@@ -117,7 +117,7 @@ def git_status(repolist):
         "added": pygit2.GIT_STATUS_INDEX_MODIFIED, #2
         "merge conflict": pygit2.GIT_STATUS_CONFLICTED #32768
     }
-    ## inversing status codes are also useful:
+    ## inversing status codes useful:
     inverse_status_codes = {v: k for k, v in status_codes.items()}
 
     repo_status_list = []
@@ -167,19 +167,22 @@ def git_status_print(statuses):
                 codes_out = fancy_text(collapsed_codes, "yellow")
         else:
             codes_out = fancy_text("<sync>", "green", "italic")
-        out_fmt = "• {dirname} ({branch}) {codes_out}".format(
+        out_fmt = "• {dirname} [{branch}] {codes_out}".format(
             dirname=fancy_text(dirname, "blue", style=["bold", "underline"]),
             branch=fancy_text(branch, "white"),
             codes_out=codes_out
         )
         print(out_fmt)
+    print("") # one-line padding after listing repos.
 
 def main():
-    path_arg = cmdarg()
+    path_arg = cmd_args()
     full_path = os.path.expanduser(path_arg)
     dirs = get_git_dirs(full_path)
     if len(dirs) is 0:
         return print("no sub git directories found")
+    else:
+        print(" directory: <%s>" %(path_arg))
     pygit_repos = as_pygit_repo(dirs)
     statuses = git_status(pygit_repos)
     git_status_print(statuses)
