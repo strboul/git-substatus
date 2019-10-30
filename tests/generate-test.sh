@@ -1,4 +1,3 @@
-
 #!/usr/bin/env bash
 
 ## the script below creates dummy project folders,
