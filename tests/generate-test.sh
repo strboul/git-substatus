@@ -39,37 +39,37 @@ cd ..
 ## 1 remote repo
 ## 2 local repos doing their own development
 ## outcome:
+## -- before fetch --
+## 1 local commit
+## -- after fetch --
 ## 1 local commit, 1 commit fetched from remote that
 ## they are different (no conflicts)
 ## --------------------------------------------------------
 ## create a 'local' directory for the remote:
-mkdir -p projB-remote
-cd projB-remote
+mkdir -p .projB-remote
+cd .projB-remote
 git init --bare ## bare because it's remote
-projB_remote_abs_path="$PWD"
+PROJB_REMOTE_ABS_PATH="$PWD"
 cd ..
 ## first, a developer make change:
-git clone "$projB_remote_abs_path" projB
+git clone "$PROJB_REMOTE_ABS_PATH" projB
 cd projB
 touch change.txt
 git add -A && git commit -m 'Initial commit'
 git push origin master
 cd ..
 ## second user clones remote repo with the changes:
-git clone "$projB_remote_abs_path" projB-user1
-cd projB-user1
+git clone "$PROJB_REMOTE_ABS_PATH" .projB-user1
+cd .projB-user1
 touch new-work.txt
 git add -A && git commit -m 'New work'
 git push origin master
 cd ..
 cd projB
-## go back to the first user, make a commit and then fetch:
+## go back to the first user, make a commit:
 touch work.txt
 git add -A && git commit -m 'Work'
-git fetch
 cd ..
-## remove `remote` and `user1` folders of projB to declutter
-rm -rf projB-remote projB-user1
 ## --------------------------------------------------------
 ## projC
 ## scenario:
@@ -122,6 +122,4 @@ cd ..
 mkdir -p proj-no-git1
 mkdir -p proj-no-git2
 printf "\n\n***script PWD (at current level):***: %s\n\n" $PWD
-printf " =========\n"
-printf " Completed\n"
-printf " =========\n\n"
+printf " === Completed ===\n\n"
