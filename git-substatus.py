@@ -41,9 +41,9 @@ def fancy_text(text, color, style=None):
     else:
         ansi_style = ""
     str = "{style}{color}{text}{reset}".format(
-        style=ansi_style, 
-        color=ansi_color, 
-        text=text, 
+        style=ansi_style,
+        color=ansi_color,
+        text=text,
         reset=reset
     )
     return str
@@ -97,26 +97,26 @@ def get_cmd_args():
         """
     )
     parser.add_argument(
-        "path", 
-        nargs="?", 
+        "path",
+        nargs="?",
         help="""
-        path indicating where you want to see substatuses. 
+        path indicating where you want to see substatuses.
         If left empty, current working directory will be chosen.
         """
     )
     parser.add_argument(
-        "--fetch", 
-        action="store_true", 
+        "--fetch",
+        action="store_true",
         help="git fetch from remote repositories"
     )
     parser.add_argument(
-        "--dont-ignore-hidden", 
-        action="store_true", 
+        "--dont-ignore-hidden",
+        action="store_true",
         help="if selected, the directories starting with dot are not ignored"
     )
     args = parser.parse_args()
 
-    ## return the current working directory 
+    ## return the current working directory
     ## if the path arg is empty:
     if args.path is not None:
         expanded_path = os.path.expanduser(args.path)
@@ -129,6 +129,7 @@ def get_cmd_args():
             raise SystemExit(fancy_text(s, "red"))
     else:
         path_arg = "."
+
     out = {
         "path_arg": path_arg,
         "fetch": args.fetch,
@@ -166,11 +167,11 @@ def git_status(repolist):
         status = repo.status()
 
         ## diverging commits between the remote and local branch:
-        try: 
+        try:
             local_head = repo.revparse_single("HEAD")
         except KeyError:
             local_head = None
-        try: 
+        try:
             ## origin/master vs origin/HEAD
             origin_master = repo.revparse_single('origin/master')
         except KeyError:
@@ -198,7 +199,7 @@ def git_status(repolist):
         diverging_commits = stat[3]
         workdir_base = get_basename(workdir)
         info.append([workdir_base, branch, repo_status_items, diverging_commits])
-    
+
     ## sort list alphabetically by the workdir name:
     info = sorted(info, key=lambda i: i[0])
     return info
@@ -221,16 +222,22 @@ def git_status_print(statuses):
                 codes_fmt.append(str)
                 collapsed_codes = ", ".join(codes_fmt)
             codes_out.append(fancy_text(collapsed_codes, "yellow"))
+
         if not diverging is None:
             div_local=diverging[0]
             div_remote=diverging[1]
-            if div_local is not 0 and div_remote is not 0:
-                text = "{local} local commit, {remote} remote commit diverged".format(
-                    local=div_local, 
-                    remote=div_remote
-                )
+            div_msg = []
+
+            if div_local is not 0:
+                div_msg.append("{local} local".format(local=div_local))
+
+            if div_remote is not 0:
+                div_msg.append("{remote} remote".format(remote=div_remote))
+
+            if len(div_msg) > 0:
+                text = ", ".join(div_msg) + " commit(s) diverged"
                 codes_out.append(text)
-        
+
         ## if there's no codes and no diverging, just out "sync" text,
         ## else, concat items in the list
         if not len(codes_out) > 0:
@@ -268,7 +275,11 @@ def main():
     if len(git_dirs) is 0:
         return print("no sub git directories found")
     else:
-        print(" directory: <%s>" %(cmd_args.get("path_arg")))
+        ## turn path into canonical and get basename:
+        parg=cmd_args.get("path_arg")
+        if parg is ".":
+            parg=os.path.realpath(".")
+        print(" directory: <%s>"%(parg))
     pygit_repos = as_pygit_repo(git_dirs)
     if cmd_args.get("fetch"):
         do_git_fetch(pygit_repos)
