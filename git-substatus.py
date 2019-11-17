@@ -1,16 +1,27 @@
 #!/usr/bin/env python3
 
-## standard modules:
+## Standard modules:
+## which are from the Python Standard Library:
+## https://docs.python.org/3/library/index.html
 import os
+import argparse
 from collections import Counter
 
-## project-specific modules:
-import pygit2
-import argparse
+## Custom modules:
+try:
+    import pygit2
+except ModuleNotFoundError:
+    raise SystemExit(
+    """
+    module \"pygit2\" required to make git-substatus work,
+    please install it
+    """
+    )
 
 ### ----------------------------------------------------------------- ###
 ### UTILS ----
 ### ----------------------------------------------------------------- ###
+
 def fancy_text(text, color, style=None):
     """
     Examples:
@@ -59,9 +70,23 @@ def match_string_in_list(x, string):
     assert isinstance(string, str)
     return [s for s in x if string in s]
 
+def commit_text(x):
+    """
+    It changes the 'commit' text based on one or many.
+    """
+    txt = "commits" if x > 1 else "commit"
+    return txt
+
+def exit_program(message):
+    """
+    sends SIGHUP 1 signal and exits:
+    """
+    raise SystemExit(fancy_text(message, "red"))
+
 ### ----------------------------------------------------------------- ###
 ### GIT CALLS ----
 ### ----------------------------------------------------------------- ###
+
 def get_git_dirs(path, get_hidden_dirs=False):
     """
     Only returns directories that have a `.git` directory
@@ -74,7 +99,7 @@ def get_git_dirs(path, get_hidden_dirs=False):
                 if Dir.startswith(".") and not get_hidden_dirs:
                     continue
                 fullpat = os.path.join(root, Dir)
-                gitpat = os.path.join(fullpat, '.git')
+                gitpat = os.path.join(fullpat, ".git")
                 if os.path.exists(gitpat):
                     var.append(fullpat)
                 else:
@@ -89,7 +114,7 @@ def get_cmd_args():
     Command line arguments
     Returns the path argument
     Notes:
-    nargs='?' makes the argument optional.
+    nargs="?" makes the argument optional.
     """
     parser = argparse.ArgumentParser(
         description="""
@@ -124,9 +149,11 @@ def get_cmd_args():
         if os.path.exists(expanded_path):
             path_arg = expanded_path
         else:
-            s = "Error: cannot find the specified directory '%s'" %(expanded_path)
-            ## send signal SIGHUP 1 and exit:
-            raise SystemExit(fancy_text(s, "red"))
+            txt="Error: cannot find the specified directory '{path}'".format(
+                path=expanded_path
+            )
+            exit_program(txt)
+            
     else:
         path_arg = "."
 
@@ -171,11 +198,19 @@ def git_status(repolist):
             local_head = repo.revparse_single("HEAD")
         except KeyError:
             local_head = None
+
+        ## same origin as the current branch:
+        if branch is not None:
+            ref = "refs/heads" + "/" + branch
+            ## be sure that that ref exist in the repo references:
+            assert len(match_string_in_list(repo.listall_references(), ref)) > 0
+        else:
+            ref = "HEAD"
         try:
-            ## origin/master vs origin/HEAD
-            origin_master = repo.revparse_single('origin/master')
+            origin_master = repo.revparse_single(ref)
         except KeyError:
             origin_master = None
+
         if origin_master is not None:
             diff = repo.ahead_behind(local_head.id, origin_master.id)
         else:
@@ -229,16 +264,22 @@ def git_status_print(statuses):
             div_msg = []
 
             if div_local is not 0:
-                div_msg.append("{local} local".format(local=div_local))
+                div_msg.append("{local} {commit} ahead".format(
+                    local=div_local,
+                    commit=commit_text(div_local)
+                ))
 
             if div_remote is not 0:
-                div_msg.append("{remote} remote".format(remote=div_remote))
+                div_msg.append("{remote} {commit} behind".format(
+                    remote=div_remote,
+                    commit=commit_text(div_remote)
+                ))
 
             if len(div_msg) > 0:
-                text = ", ".join(div_msg) + " commit(s) diverged"
+                text = ", ".join(div_msg) + " origin"
                 codes_out.append(text)
 
-        ## if there's no codes and no diverging, just out "sync" text,
+        ## if there are no codes and no diverging, just out "sync" text,
         ## else, concat items in the list
         if not len(codes_out) > 0:
             codes_out = fancy_text("<sync>", "green", "italic")
@@ -254,17 +295,40 @@ def git_status_print(statuses):
 
 def do_git_fetch(repolist):
     """
-    Perform fetch on each repository
+    Perform a `git fetch` on each repository
     """
+    ## `pygit2.Keypair(username, pubkey, privkey, passphrase)`
+    # ssh_keypair=pygit2.Keypair("git", "id_rsa.pub", "id_rsa", "")
+    currpat=os.getcwd()
     for repo in repolist:
-        repo_refs = list(repo.references)
+        repo_refs = repo.listall_references()
         src = match_string_in_list(repo_refs, "head")
         target = match_string_in_list(repo_refs, "remote")
         if not len(target) > 0:
             continue
         remote = repo.remotes[0]
-        print(" Fetching repository: %s" %(get_basename(repo.workdir)))
-        remote.fetch()
+        ## commented out code, replaced with OS system call because
+        ## of the bug in the libgit2/pygit2.
+        ## https://github.com/libgit2/pygit2/issues/836
+        # try:    
+        #     remote.fetch(callbacks=ssh_keypair)
+        # except pygit2.GitError as fetch_err:
+        #     txt = """
+        #     cannot fetch \"{repo}\" repository...
+        #     {error_msg}
+        #     (If this problem persists, don't use the `--fetch` tag for a while.)
+        #     """.format(repo=get_basename(repo.workdir), error_msg=str(fetch_err))
+        #     exit_program(txt)
+        os.chdir(repo.workdir)
+        print("\033[K Fetching repository: {dir}\r".format(dir=os.getcwd()), end="")
+        os.system("git fetch")
+    print("\033[K All fetched.")
+    os.chdir(currpat)
+    return True
+
+### ----------------------------------------------------------------- ###
+### MAIN ----
+### ----------------------------------------------------------------- ###
 
 def main():
     cmd_args = get_cmd_args()
@@ -272,6 +336,7 @@ def main():
         cmd_args.get("path_arg"),
         cmd_args.get("dont_ignore_hidden")
     )
+
     if len(git_dirs) is 0:
         return print("no sub git directories found")
     else:
@@ -280,15 +345,13 @@ def main():
         if parg is ".":
             parg=os.path.realpath(".")
         print(" directory: <%s>"%(parg))
+
     pygit_repos = as_pygit_repo(git_dirs)
     if cmd_args.get("fetch"):
         do_git_fetch(pygit_repos)
     statuses = git_status(pygit_repos)
     git_status_print(statuses)
 
-### ----------------------------------------------------------------- ###
-### MAIN ----
-### ----------------------------------------------------------------- ###
 if __name__ == "__main__":
     main()
 
