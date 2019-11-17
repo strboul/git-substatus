@@ -1,13 +1,9 @@
 #!/usr/bin/env bash
-
 ## the script below creates dummy project folders,
 ## which each of them can represent a different case,
 ## that are possible situations which can be encountered 
 ## during the use of git-substatus.
-
-## create a project folder keeping the individual project folders:
-mkdir -p test-project-folder
-cd test-project-folder
+mkdir -p test-project-folder && cd test-project-folder
 ## --------------------------------------------------------
 ## projA
 ## scenario:
@@ -17,11 +13,8 @@ cd test-project-folder
 ## outcome:
 ## 2 files changed, 1 file added, 1 file removed
 ## --------------------------------------------------------
-mkdir -p projA
-cd projA
-touch fruits.txt
-touch vegetables.txt
-touch dairy.txt
+mkdir -p projA && cd projA
+touch fruits.txt vegetables.txt dairy.txt
 echo "apple, orange, banana" > fruits.txt
 echo "broccoli, avocado" > vegetables.txt
 git init
@@ -64,8 +57,7 @@ cd .projB-user1
 touch new-work.txt
 git add -A && git commit -m 'New work'
 git push origin master
-cd ..
-cd projB
+cd ../projB
 ## go back to the first user, make a commit:
 touch work.txt
 git add -A && git commit -m 'Work'
@@ -79,8 +71,7 @@ cd ..
 ## outcome:
 ## a merge conflict occurred
 ## --------------------------------------------------------
-mkdir -p projC
-cd projC
+mkdir -p projC && cd projC
 touch code.py
 echo "print('Hello, world!')" > code.py
 git init
@@ -98,8 +89,7 @@ cd ..
 ## scenario:
 ## in a different branch than master but did not commit at all
 ## --------------------------------------------------------
-mkdir -p projD
-cd projD
+mkdir -p projD && cd projD
 git init
 git checkout -b new-branch
 touch file.txt
@@ -109,8 +99,7 @@ cd ..
 ## scenario:
 ## in a different branch than master and at least one commit done
 ## --------------------------------------------------------
-mkdir -p projE
-cd projE
+mkdir -p projE && cd projE
 git init
 git checkout -b new-model-branch
 touch file.txt
@@ -119,7 +108,6 @@ cd ..
 ## --------------------------------------------------------
 ## Adding some extra non-git 
 ## folders (having no `.git` directory in it):
-mkdir -p proj-no-git1
-mkdir -p proj-no-git2
+mkdir -p proj-no-git1 proj-no-git2
 printf "\n\n***script PWD (at current level):***: %s\n\n" $PWD
 printf " === Completed ===\n\n"
