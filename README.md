@@ -8,7 +8,7 @@ A small script to find the git status in subdirectories
 + unmerged
 + merge conflicts
 
-<!-- <GIF> -->
+<p align="center"><img src="media/sample.gif"/></p>
 
 ## Usage
 

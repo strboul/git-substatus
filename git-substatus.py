@@ -201,18 +201,19 @@ def git_status(repolist):
 
         ## same origin as the current branch:
         if branch is not None:
-            ref = "refs/heads" + "/" + branch
+            ref = "refs/remotes/origin/" + branch
             ## be sure that that ref exist in the repo references:
             assert len(match_string_in_list(repo.listall_references(), ref)) > 0
         else:
             ref = "HEAD"
-        try:
-            origin_master = repo.revparse_single(ref)
-        except KeyError:
-            origin_master = None
 
-        if origin_master is not None:
-            diff = repo.ahead_behind(local_head.id, origin_master.id)
+        try:
+            origin_head = repo.revparse_single(ref)
+        except KeyError:
+            origin_head = None
+
+        if origin_head is not None:
+            diff = repo.ahead_behind(local_head.id, origin_head.id)
         else:
             diff = None
 
@@ -321,7 +322,7 @@ def do_git_fetch(repolist):
         #     exit_program(txt)
         os.chdir(repo.workdir)
         print("\033[K Fetching repository: {dir}\r".format(dir=os.getcwd()), end="")
-        os.system("git fetch")
+        os.system("git fetch &> /dev/null")
     print("\033[K All fetched.")
     os.chdir(currpat)
     return True
