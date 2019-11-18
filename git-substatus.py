@@ -1,26 +1,27 @@
 #!/usr/bin/env python3
 
-## Standard modules:
-## which are from the Python Standard Library:
-## https://docs.python.org/3/library/index.html
+# Standard modules:
+# which are from the Python Standard Library:
+# https://docs.python.org/3/library/index.html
 import os
 import argparse
 from collections import Counter
 
-## Custom modules:
+# Custom modules:
 try:
     import pygit2
 except ModuleNotFoundError:
     raise SystemExit(
-    """
-    module \"pygit2\" required to make git-substatus work,
-    please install it
-    """
+        """
+        module \"pygit2\" required to make git-substatus work,
+        please install it
+        """
     )
 
-### ----------------------------------------------------------------- ###
-### UTILS ----
-### ----------------------------------------------------------------- ###
+# # ---------------------------------------------------------------- # #
+# # -- UTILS ------
+# # ---------------------------------------------------------------- # #
+
 
 def fancy_text(text, color, style=None):
     """
@@ -39,28 +40,30 @@ def fancy_text(text, color, style=None):
         "white": "\033[37m"
     }
     ansi_styles = {
-        "bold" : "\033[1m",
+        "bold": "\033[1m",
         "italic": "\033[3m",
         "underline": "\033[4m"
     }
     ansi_color = ansi_colors[color]
     if style is not None:
         if type(style) is list:
-             ansi_style = "".join([ansi_styles.get(k) for k in style])
+            ansi_style = "".join([ansi_styles.get(k) for k in style])
         else:
             ansi_style = ansi_styles[style]
     else:
         ansi_style = ""
-    str = "{style}{color}{text}{reset}".format(
+    text = "{style}{color}{text}{reset}".format(
         style=ansi_style,
         color=ansi_color,
         text=text,
         reset=reset
     )
-    return str
+    return text
+
 
 def get_basename(path):
     return os.path.basename(os.path.normpath(path))
+
 
 def match_string_in_list(x, string):
     """
@@ -70,6 +73,7 @@ def match_string_in_list(x, string):
     assert isinstance(string, str)
     return [s for s in x if string in s]
 
+
 def commit_text(x):
     """
     It changes the 'commit' text based on one or many.
@@ -77,15 +81,17 @@ def commit_text(x):
     txt = "commits" if x > 1 else "commit"
     return txt
 
+
 def exit_program(message):
     """
     sends SIGHUP 1 signal and exits:
     """
     raise SystemExit(fancy_text(message, "red"))
 
-### ----------------------------------------------------------------- ###
-### GIT CALLS ----
-### ----------------------------------------------------------------- ###
+# # ---------------------------------------------------------------- # #
+# # -- GIT CALLS------
+# # ---------------------------------------------------------------- # #
+
 
 def get_git_dirs(path, get_hidden_dirs=False):
     """
@@ -108,6 +114,7 @@ def get_git_dirs(path, get_hidden_dirs=False):
         else:
             break
     return var
+
 
 def get_cmd_args():
     """
@@ -141,21 +148,20 @@ def get_cmd_args():
     )
     args = parser.parse_args()
 
-    ## return the current working directory
-    ## if the path arg is empty:
+    # return the current working directory
+    # if the path arg is empty:
+    path_arg = "."
+
     if args.path is not None:
         expanded_path = os.path.expanduser(args.path)
-        ## check if dir exists:
+        # check if dir exists:
         if os.path.exists(expanded_path):
             path_arg = expanded_path
         else:
-            txt="Error: cannot find the specified directory '{path}'".format(
+            txt = "Error: cannot find the specified directory '{path}'".format(
                 path=expanded_path
             )
             exit_program(txt)
-            
-    else:
-        path_arg = "."
 
     out = {
         "path_arg": path_arg,
@@ -164,6 +170,7 @@ def get_cmd_args():
     }
     return out
 
+
 def as_pygit_repo(dirlist):
     assert isinstance(dirlist, list)
     repo = []
@@ -171,38 +178,39 @@ def as_pygit_repo(dirlist):
         repo.append(pygit2.Repository(Dir))
     return repo
 
+
 def git_status(repolist):
     assert isinstance(repolist, list)
 
     status_codes = {
-        "new": pygit2.GIT_STATUS_WT_NEW, #128
-        "modified": pygit2.GIT_STATUS_WT_MODIFIED, #256
-        "deleted": pygit2.GIT_STATUS_WT_DELETED, #512
-        "renamed": pygit2.GIT_STATUS_WT_RENAMED, #2048
-        "added": pygit2.GIT_STATUS_INDEX_MODIFIED, #2
-        "merge conflict": pygit2.GIT_STATUS_CONFLICTED #32768
+        "new": pygit2.GIT_STATUS_WT_NEW,  # 128
+        "modified": pygit2.GIT_STATUS_WT_MODIFIED,  # 256
+        "deleted": pygit2.GIT_STATUS_WT_DELETED,  # 512
+        "renamed": pygit2.GIT_STATUS_WT_RENAMED,  # 2048
+        "added": pygit2.GIT_STATUS_INDEX_MODIFIED,  # 2
+        "merge conflict": pygit2.GIT_STATUS_CONFLICTED  # 32768
     }
-    ## inversing status codes useful:
+    # inversing status codes useful:
     inverse_status_codes = {v: k for k, v in status_codes.items()}
 
     repo_status_list = []
     for repo in repolist:
         try:
             branch = repo.head.shorthand
-        except pygit2.GitError: ## return None if no branch found
+        except pygit2.GitError:  # return None if no branch found
             branch = None
         status = repo.status()
 
-        ## diverging commits between the remote and local branch:
+        # diverging commits between the remote and local branch:
         try:
             local_head = repo.revparse_single("HEAD")
         except KeyError:
             local_head = None
 
-        ## same origin as the current branch:
+        # same origin as the current branch:
         if branch is not None:
             ref = "refs/remotes/origin/" + branch
-            ## be sure that that ref exist in the repo references:
+            # be sure that that ref exist in the repo references:
             assert len(match_string_in_list(repo.listall_references(), ref)) > 0
         else:
             ref = "HEAD"
@@ -236,9 +244,10 @@ def git_status(repolist):
         workdir_base = get_basename(workdir)
         info.append([workdir_base, branch, repo_status_items, diverging_commits])
 
-    ## sort list alphabetically by the workdir name:
+    # sort list alphabetically by the workdir name:
     info = sorted(info, key=lambda i: i[0])
     return info
+
 
 def git_status_print(statuses):
     assert isinstance(statuses, list)
@@ -251,17 +260,18 @@ def git_status_print(statuses):
         if len(codes) > 0:
             codes_counter = Counter(codes)
             unique_codes = list(set(codes))
+            collapsed_codes = ""
             codes_fmt = []
             for code in unique_codes:
                 count = codes_counter.get(code)
-                str = "{count} {code}".format(count=count,code=code)
-                codes_fmt.append(str)
+                txt = "{count} {code}".format(count=count, code=code)
+                codes_fmt.append(txt)
                 collapsed_codes = ", ".join(codes_fmt)
             codes_out.append(fancy_text(collapsed_codes, "yellow"))
 
-        if not diverging is None:
-            div_local=diverging[0]
-            div_remote=diverging[1]
+        if diverging is not None:
+            div_local = diverging[0]
+            div_remote = diverging[1]
             div_msg = []
 
             if div_local is not 0:
@@ -280,8 +290,8 @@ def git_status_print(statuses):
                 text = ", ".join(div_msg) + " origin"
                 codes_out.append(text)
 
-        ## if there are no codes and no diverging, just out "sync" text,
-        ## else, concat items in the list
+        # if there are no codes and no diverging, just out "sync" text,
+        # else, concat items in the list:
         if not len(codes_out) > 0:
             codes_out = fancy_text("<sync>", "green", "italic")
         else:
@@ -292,25 +302,25 @@ def git_status_print(statuses):
             codes_out=codes_out
         )
         print(out_format)
-    print("") # one-line padding after listing repos.
+    print("")  # one-line padding after listing repos.
+
 
 def do_git_fetch(repolist):
     """
     Perform a `git fetch` on each repository
     """
-    ## `pygit2.Keypair(username, pubkey, privkey, passphrase)`
+    # `pygit2.Keypair(username, pubkey, privkey, passphrase)`
     # ssh_keypair=pygit2.Keypair("git", "id_rsa.pub", "id_rsa", "")
-    currpat=os.getcwd()
+    currpat = os.getcwd()
     for repo in repolist:
         repo_refs = repo.listall_references()
-        src = match_string_in_list(repo_refs, "head")
         target = match_string_in_list(repo_refs, "remote")
         if not len(target) > 0:
             continue
-        remote = repo.remotes[0]
-        ## commented out code, replaced with OS system call because
-        ## of the bug in the libgit2/pygit2.
-        ## https://github.com/libgit2/pygit2/issues/836
+        # commented out code, replaced with OS system call because
+        # of the bug in the libgit2/pygit2.
+        # https://github.com/libgit2/pygit2/issues/836
+        # remote = repo.remotes[0]
         # try:    
         #     remote.fetch(callbacks=ssh_keypair)
         # except pygit2.GitError as fetch_err:
@@ -324,12 +334,14 @@ def do_git_fetch(repolist):
         print("\033[K Fetching repository: {dir}\r".format(dir=os.getcwd()), end="")
         os.system("git fetch &> /dev/null")
     print("\033[K All fetched.")
+    # return to the current path after all:
     os.chdir(currpat)
     return True
 
-### ----------------------------------------------------------------- ###
-### MAIN ----
-### ----------------------------------------------------------------- ###
+
+# # ---------------------------------------------------------------- # #
+# # -- MAIN------
+# # ---------------------------------------------------------------- # #
 
 def main():
     cmd_args = get_cmd_args()
@@ -341,17 +353,18 @@ def main():
     if len(git_dirs) is 0:
         return print("no sub git directories found")
     else:
-        ## turn path into canonical and get basename:
-        parg=cmd_args.get("path_arg")
+        # turn path into canonical and get basename:
+        parg = cmd_args.get("path_arg")
         if parg is ".":
-            parg=os.path.realpath(".")
-        print(" directory: <%s>"%(parg))
+            parg = os.path.realpath(".")
+        print(" directory: <%s>" % parg)
 
     pygit_repos = as_pygit_repo(git_dirs)
     if cmd_args.get("fetch"):
         do_git_fetch(pygit_repos)
     statuses = git_status(pygit_repos)
     git_status_print(statuses)
+
 
 if __name__ == "__main__":
     main()
