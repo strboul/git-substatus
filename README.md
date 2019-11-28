@@ -20,7 +20,7 @@ Please note that *libgit2* `C` library and *pygit2* `Python` module are required
 
 ## Usage
 
-<img src="media/sample.gif" align="center" height="135"/>
+<img src="media/sample.gif" align="center" height="145"/>
 
 See more at `git-substatus --help`
 

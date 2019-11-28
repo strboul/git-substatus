@@ -4,6 +4,7 @@
 # which are from the Python Standard Library:
 # https://docs.python.org/3/library/index.html
 import os
+import subprocess
 import argparse
 from collections import Counter
 
@@ -275,19 +276,21 @@ def git_status_print(statuses):
             div_msg = []
 
             if div_local is not 0:
-                div_msg.append("{local} {commit} ahead".format(
+                div_local_msg = "{local} {commit} ahead".format(
                     local=div_local,
                     commit=commit_text(div_local)
-                ))
+                )
+                div_msg.append(div_local_msg)
 
             if div_remote is not 0:
-                div_msg.append("{remote} {commit} behind".format(
+                div_remote_msg = "{remote} {commit} behind".format(
                     remote=div_remote,
                     commit=commit_text(div_remote)
-                ))
+                )
+                div_msg.append(div_remote_msg)
 
             if len(div_msg) > 0:
-                text = ", ".join(div_msg) + " origin"
+                text = fancy_text(", ".join(div_msg) + " origin", "yellow")
                 codes_out.append(text)
 
         # if there are no codes and no diverging, just out "sync" text,
@@ -332,7 +335,7 @@ def do_git_fetch(repolist):
         #     exit_program(txt)
         os.chdir(repo.workdir)
         print("\033[K Fetching repository: {dir}\r".format(dir=os.getcwd()), end="")
-        os.system("git fetch &> /dev/null")
+        subprocess.call(["git", "fetch"], stdout=subprocess.DEVNULL)
     print("\033[K All fetched.")
     # return to the current path after all:
     os.chdir(currpat)
@@ -364,6 +367,7 @@ def main():
         do_git_fetch(pygit_repos)
     statuses = git_status(pygit_repos)
     git_status_print(statuses)
+    return True
 
 
 if __name__ == "__main__":
