@@ -4,8 +4,10 @@
 # which are from the Python Standard Library:
 # https://docs.python.org/3/library/index.html
 import os
+import sys
 import subprocess
 import argparse
+import textwrap
 from collections import Counter
 
 # Custom modules:
@@ -13,11 +15,28 @@ try:
     import pygit2
 except ModuleNotFoundError:
     raise SystemExit(
-        """
-        module \"pygit2\" required to make git-substatus work,
-        please install it
-        """
+        textwrap.dedent(
+            """
+            module \"pygit2\" required to make git-substatus work,
+            please install it
+            """
+        )
     )
+
+
+# # ---------------------------------------------------------------- # #
+# # -- GLOBALS ------
+# # ---------------------------------------------------------------- # #
+
+GIT_STATUS_CODES = {
+    "new": pygit2.GIT_STATUS_WT_NEW,  # 128
+    "modified": pygit2.GIT_STATUS_WT_MODIFIED,  # 256
+    "deleted": pygit2.GIT_STATUS_WT_DELETED,  # 512
+    "renamed": pygit2.GIT_STATUS_WT_RENAMED,  # 2048
+    "added": pygit2.GIT_STATUS_INDEX_MODIFIED,  # 2
+    "merge conflict": pygit2.GIT_STATUS_CONFLICTED  # 32768
+}
+
 
 # # ---------------------------------------------------------------- # #
 # # -- UTILS ------
@@ -183,16 +202,9 @@ def as_pygit_repo(dirlist):
 def git_status(repolist):
     assert isinstance(repolist, list)
 
-    status_codes = {
-        "new": pygit2.GIT_STATUS_WT_NEW,  # 128
-        "modified": pygit2.GIT_STATUS_WT_MODIFIED,  # 256
-        "deleted": pygit2.GIT_STATUS_WT_DELETED,  # 512
-        "renamed": pygit2.GIT_STATUS_WT_RENAMED,  # 2048
-        "added": pygit2.GIT_STATUS_INDEX_MODIFIED,  # 2
-        "merge conflict": pygit2.GIT_STATUS_CONFLICTED  # 32768
-    }
+
     # inversing status codes useful:
-    inverse_status_codes = {v: k for k, v in status_codes.items()}
+    inverse_status_codes = {v: k for k, v in GIT_STATUS_CODES.items()}
 
     repo_status_list = []
     for repo in repolist:
@@ -210,7 +222,7 @@ def git_status(repolist):
 
         # same origin as the current branch:
         if branch is not None:
-            ref = "refs/remotes/origin/" + branch
+            ref = "refs/heads/" + branch
             # be sure that that ref exist in the repo references:
             assert len(match_string_in_list(repo.listall_references(), ref)) > 0
         else:
@@ -237,7 +249,7 @@ def git_status(repolist):
         for s in range(0, len(items)):
             single_items = list(items[s])
             value = single_items[1]
-            if value in status_codes.values():
+            if value in GIT_STATUS_CODES.values():
                 repo_status_items.append(inverse_status_codes[value])
             else:
                 continue
@@ -260,7 +272,8 @@ def git_status_print(statuses):
         diverging = status[3]
         if len(codes) > 0:
             codes_counter = Counter(codes)
-            unique_codes = list(set(codes))
+            # sort code statuses alphabetically to get them in the same order:
+            unique_codes = sorted(list(set(codes)))
             collapsed_codes = ""
             codes_fmt = []
             for code in unique_codes:
@@ -324,7 +337,7 @@ def do_git_fetch(repolist):
         # of the bug in the libgit2/pygit2.
         # https://github.com/libgit2/pygit2/issues/836
         # remote = repo.remotes[0]
-        # try:    
+        # try:
         #     remote.fetch(callbacks=ssh_keypair)
         # except pygit2.GitError as fetch_err:
         #     txt = """
@@ -354,7 +367,8 @@ def main():
     )
 
     if len(git_dirs) is 0:
-        return print("no sub git directories found")
+        print("no sub git directories found", file=sys.stderr)
+        sys.exit(1)
     else:
         # turn path into canonical and get basename:
         parg = cmd_args.get("path_arg")
