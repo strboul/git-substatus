@@ -31,7 +31,7 @@ See more at `git-substatus --help`
 pip3 install -r requirements.txt
 ## After generating sample test directory with `./tests/generate-test.sh`, 
 ## run the unit tests:
-python3 -m unittest tests/test-git-substatus.py
+python3 tests/test-git-substatus.py
 ## Run the sample test directory manually:
 python3 git-substatus.py tests/test-project-folder
 ```
