@@ -1,11 +1,14 @@
 # git-substatus
 
+[![CI status](https://github.com/strboul/git-substatus/workflows/CI/badge.svg)](https://github.com/strboul/git-substatus/actions)
+
 A small script to find the git status in subdirectories 
 (e.g., in a *common project folder*), where I'd like to see what changes have been done in the states of:
 
 + added, removed, modified, renamed
 + unpushed, unmerged
 + merge conflicts
+
 
 ## Installation
 
@@ -18,11 +21,13 @@ chmod u+x /usr/local/bin/git-substatus
 
 Please note that *libgit2* `C` library and *pygit2* `Python` module are required.
 
+
 ## Usage
 
 <img src="media/sample.gif" align="center" height="145"/>
 
 See more at `git-substatus --help`
+
 
 ## Development
 
