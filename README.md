@@ -24,7 +24,7 @@ Please note that *libgit2* `C` library and *pygit2* `Python` module are required
 
 ## Usage
 
-<img src="media/sample.gif" align="center" height="145"/>
+<img src="https://user-images.githubusercontent.com/25015317/97109790-8cbd6680-16d5-11eb-9c2e-b1626368ba62.gif" align="center" height="145"/>
 
 See more at `git-substatus --help`
 
