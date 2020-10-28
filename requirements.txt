@@ -1,4 +1,0 @@
-cached-property==1.5.1
-cffi==1.14.0
-pycparser==2.20
-pygit2==1.2.0
