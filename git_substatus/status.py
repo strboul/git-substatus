@@ -82,7 +82,7 @@ class StatusChanges:
         !           !    ignored
         -------------------------------------------------
         """
-
+        # TODO
         status_details = {
             "??": "untracked",
             "M":  "modified",
@@ -138,9 +138,8 @@ class StatusAheadBehind:
 
 
 class Status:
-    def __init__(self, dirs: Tuple[str, ...]) -> None:
-        assert type(dirs) in [tuple]
-        self.dirs = dirs
+    def __init__(self, repos: Tuple[str, ...]):
+        self.repos = repos
 
     def get_status(self) -> Tuple[str, ...]:
         """
@@ -150,8 +149,8 @@ class Status:
         return git_status
 
     def __get_statuses(self):
-        for d in self.dirs:
-            status = self.__get_git_status(d)
+        for repo in self.repos:
+            status = self.__get_git_status(repo)
             yield status
 
     def __get_git_status(self, path: str) -> str:
@@ -170,16 +169,15 @@ class Status:
 
         return out
 
-    def __is_status_clean(self):
+    def __is_status_clean(self) -> bool:
         """
         Checks if working tree contains modifications which have not yet been
         committed to the current branch.
         """
-        arr = list(filter(lambda a: not a.startswith("##"), self.status_details))
-        if len(arr) > 0:
-            # check for the updates in ahead-behind part
-            detail = self.status_details[0].split("[")
-            if len(detail) > 1:
-                return False
-        else:
-            return True
+        if len(self.status_details) > 1:
+            return False
+        # check for the updates in ahead-behind part
+        btw_brackets = self.status_details[0].split("[")
+        if len(btw_brackets) > 1:
+            return False
+        return True

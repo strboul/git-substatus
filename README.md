@@ -1,4 +1,4 @@
-# git-substatus-v2
+# git-substatus
 
 <!-- badges: start -->
 [![CI status](https://github.com/strboul/git-substatus/workflows/CI/badge.svg)](https://github.com/strboul/git-substatus/actions)
@@ -40,7 +40,7 @@ This module has no module dependency outside
 
 <details>
 
-### Running tests
+### Run tests
 
 ```bash
 virtualenv venv
@@ -49,42 +49,12 @@ pip install -r dev-requirements.txt
 make all
 ```
 
-### To-do
+### Add new methods
 
-Used the text to name the functions/methods in the package
-
++ Use the reference to name the functions/methods in the module:
 https://mirrors.edge.kernel.org/pub/software/scm/git/docs/gitglossary.html
 
-+ Remove all "v2" references once everything is done.
-
-+ Once everything is done, add mypy types to every possible "module" call (not
-tests) and fortify them.
-
-+ Instead of creating a media/ folder, put the gif into an issue and link to
-the readme and close it later.
-
-+ Run black time-to-time https://github.com/psf/black but be careful as it
-overwrites the files. Run `black git_substatus` when you have a clean git
-status.
-
-+ To fix the coverage: move gitsubstatus.py to __main__.py and see if coverage
-works. And then improve test coverage (e.g. some utils missing).
-
-#### Planning
-
-class Worktree (inherits Repository?)
-**is_git_worktree https://git-scm.com/docs/git-worktree
-
-**class Worktree (inherits Repository)
-**show_worktree
-
-class Stash (inherits Status)
-
-has_stash       there are stashed modifications
-num_stash       number of stashed modifications
-
-class Fetch
-
-do_fetch   performs a git fetch.
++ Run `black git_substatus` https://github.com/psf/black but be careful as it
+overwrites the files, so do it when you have a clean git status.
 
 </details>

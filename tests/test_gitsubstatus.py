@@ -2,7 +2,7 @@ from tests.base import *
 
 from git_substatus.gitsubstatus import GitSubstatusApplication
 
-class TestRepository(TestBase):
+class TestGitsubstatus(TestBase):
 
     def test_gitsubstatus(self):
         gitsubstatus = GitSubstatusApplication({

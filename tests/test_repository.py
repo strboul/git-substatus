@@ -12,7 +12,15 @@ class TestRepository(TestBase):
         git_repos = repository.get_git_repository_paths()
         self.assertEqual(
             tuple(map(os.path.basename, git_repos)),
-            ("projA", "projB", "projC", "projD", "projE", "projF",)
+            (
+                "projA",
+                "projB",
+                "projC",
+                "projD",
+                "projE",
+                "projE-worktree",
+                "projF",
+            )
         )
 
     def test_get_git_repositories_dont_ignore_hidden(self):
@@ -29,6 +37,7 @@ class TestRepository(TestBase):
                 "projC",
                 "projD",
                 "projE",
+                "projE-worktree",
                 "projF",
             )
         )
@@ -40,7 +49,15 @@ class TestRepository(TestBase):
         repo_names = repository.get_repo_names()
         self.assertEqual(
             repo_names,
-            ("projA", "projB", "projC", "projD", "projE", "projF")
+            (
+                "projA",
+                "projB",
+                "projC",
+                "projD",
+                "projE",
+                "projE-worktree",
+                "projF",
+            )
         )
 
 

@@ -27,6 +27,6 @@ setup(
     license="MIT",
     packages=["git_substatus"],
     entry_points = {
-        "console_scripts": ["git-substatus-v2=git_substatus.__main__:main"],
+        "console_scripts": ["git-substatus=git_substatus.__main__:main"],
     }
 )

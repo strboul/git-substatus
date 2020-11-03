@@ -22,6 +22,7 @@ class TestStatus(TestBase):
                 "1 unmerged",
                 "1 untracked",
                 "<sync>",
+                "<sync>",
                 "1 deleted, 1 renamed",
             )
         )

@@ -110,18 +110,31 @@ cd .. || exit
 # --------------------------------------------------------
 mkdir -p projE && cd projE || exit
 git init && set_local_git_config
-git checkout -b branchie
 touch file.txt
+git add -A && git commit -m "Initial commit"
+git checkout -b branchie
+touch file2.txt
 git add -A && git commit -m "Add file"
+cd .. || exit
+
+# projE-worktree
+# this proj is a worktree of projE
+# scenario:
+# TODO
+# --------------------------------------------------------
+cd projE || exit
+git worktree add ../projE-worktree master
 cd .. || exit
 
 # projF
 # scenario:
-# one renamed, one moved
+# one renamed, one moved | 2 stashes
 mkdir -p projF && cd projF || exit
 git init && set_local_git_config
 touch apple avocado
 git add -A && git commit -m "Add files"
+echo "text1" >> apple && echo "text1" >> avocado && git stash
+echo "text2" >> apple && echo "text2" >> avocado && git stash
 git rm apple
 mkdir -p subdir
 git mv avocado subdir/mango
