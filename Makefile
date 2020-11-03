@@ -23,13 +23,12 @@ unittest:
 typecheck:
 	$(call check_pip_module,"mypy")
 	$(call echo_section,"static type checking")
-	mypy git_substatus
+	mypy --pretty --show-error-context --show-error-codes git_substatus
 
 coverage:
 	$(call check_pip_module,"coverage")
 	$(call echo_section,"measuring code coverage")
-	coverage run git_substatus &&\
-	coverage report
+	coverage run --source git_substatus -m unittest && coverage report
 
 clean:
 	$(call echo_section,"cleaning")

@@ -1,6 +1,49 @@
 from git_substatus.base import *
 
 
+def exit_program(message: str):
+    """
+    Sends SIGHUP 1 signal and exits the program.
+    """
+    raise SystemExit(fancy_text(message, "red"))
+
+
+def list_directories(path: str) -> List[str]:
+    """
+    List only directories in a path.
+    """
+    return next(os.walk(path))[1]
+
+
+def flatten(lst: Union[List[Any], Tuple[Any, ...]]) -> Iterator[Any]:
+    """
+    Flatten a nested list or tuple.
+
+    Examples:
+    list(flatten(["a", "b", [1, "z"]]))
+    """
+    for l in lst:
+        if isinstance(l, (list, tuple)):
+            yield from flatten(l)
+        else:
+            yield l
+
+
+def sort_by_basename(arr: Tuple[str, ...]) -> Tuple[str, ...]:
+    """
+    Sort a tuple containing paths by the basename.
+
+    Examples:
+    paths = ("abc/z", "def/a")
+    sort_by_basename(paths)
+    """
+    sorted_arr = tuple(sorted(
+        arr,
+        key=lambda a: os.path.splitext(os.path.basename(a))[0]
+    ))
+    return sorted_arr
+
+
 def fancy_text(text: str, color: str, styles: Tuple[str, ...] = None) -> str:
     """
     Prints string with ANSI colors on terminal.
@@ -49,49 +92,6 @@ def fancy_text(text: str, color: str, styles: Tuple[str, ...] = None) -> str:
     return text
 
 
-def exit_program(message: str):
-    """
-    Sends SIGHUP 1 signal and exits the program.
-    """
-    raise SystemExit(fancy_text(message, "red"))
-
-
-def list_directories(path: str) -> List[str]:
-    """
-    List only directories in a path.
-    """
-    return next(os.walk(path))[1]
-
-
-def flatten(lst):
-    """
-    Flatten a nested list or tuple.
-
-    Examples:
-    list(flatten(["a", "b", [1, "z"]]))
-    """
-    for l in lst:
-        if isinstance(l, (list, tuple)):
-            yield from flatten(l)
-        else:
-            yield l
-
-
-def sort_by_basename(arr: Tuple[str, ...]) -> Tuple[str, ...]:
-    """
-    Sort a tuple containing paths by the basename.
-
-    Examples:
-    paths = ("abc/z", "def/a")
-    sort_by_basename(paths)
-    """
-    sorted_arr = tuple(sorted(
-        arr,
-        key=lambda a: os.path.splitext(os.path.basename(a))[0]
-    ))
-    return sorted_arr
-
-
 def check_git_installed():
     """
     Checks if git is installed on the system. Exits the program if it is not
@@ -115,13 +115,8 @@ def run_git_command(path: str, what: List[str]) -> str:
     -C <path> comes from that as if git was started in <path> instead
     of the current working directory.
     """
-    assert isinstance(what, list)
     cmd = list(flatten(["git", "-C", os.path.expanduser(path), what]))
-    run = subprocess.run(
-        cmd,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.DEVNULL
-    )
+    run = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL)
     if run.returncode is not 0:
         return ""
     out = run.stdout.decode("utf-8")

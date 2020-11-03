@@ -3,20 +3,20 @@ from tests.base import *
 from git_substatus.directory import Directory
 from git_substatus.repository import Repository
 
-from git_substatus.branch import Branch
+from git_substatus.worktree import Worktree
 
-class TestBranch(TestBase):
+class TestWorktree(TestBase):
 
-    def test_get_branch_head(self):
+    def test_have_worktree(self):
         directory = Directory(self.temp_test_dir, False)
         sub_dirs = directory.get_sub_directories()
         repository = Repository(sub_dirs)
         git_repos = repository.get_git_repository_paths()
-        branch = Branch(git_repos)
-        branches = branch.get_branch_head()
+        worktree = Worktree(git_repos)
+        have_worktrees = worktree.have_worktree()
         self.assertEqual(
-            branches,
-            ("master", "master", "master", "new-branch", "branchie", "master", "master",)
+            have_worktrees,
+            (False, False, False, False, True, True, False, )
         )
 
 

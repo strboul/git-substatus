@@ -4,8 +4,7 @@ from git_substatus.utils import list_directories, run_git_command
 
 
 class Repository:
-    def __init__(self, dirs: Tuple[str, ...]) -> None:
-        assert type(dirs) in [tuple]
+    def __init__(self, dirs: Tuple[str, ...]):
         self.dirs = dirs
 
     def get_git_repository_paths(self) -> Tuple[str, ...]:
@@ -29,4 +28,6 @@ class Repository:
     def __is_git_repository(self, path: str) -> bool:
         cmd = run_git_command(path, ["rev-parse", "--show-toplevel"])
         cmd = "".join(cmd.split())
-        return bool(True if cmd == path else False)
+        base_cmd = os.path.basename(cmd)
+        base_path = os.path.basename(path)
+        return bool(True if base_cmd == base_path else False)

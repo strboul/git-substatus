@@ -4,7 +4,7 @@ from git_substatus.utils import sort_by_basename, list_directories
 
 
 class Directory:
-    def __init__(self, path: str, dont_ignore_hidden: bool) -> None:
+    def __init__(self, path: str, dont_ignore_hidden: bool):
         if not isinstance(path, str):
             raise TypeError
 

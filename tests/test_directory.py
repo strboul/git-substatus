@@ -17,6 +17,7 @@ class TestDirectory(TestBase):
                 "projC",
                 "projD",
                 "projE",
+                "projE-worktree",
                 "projF",
             )
         )
@@ -37,6 +38,7 @@ class TestDirectory(TestBase):
                 "projC",
                 "projD",
                 "projE",
+                "projE-worktree",
                 "projF",
             )
         )
