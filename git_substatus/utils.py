@@ -44,7 +44,7 @@ def sort_by_basename(arr: Tuple[str, ...]) -> Tuple[str, ...]:
     return sorted_arr
 
 
-def fancy_text(text: str, color: str, styles: Tuple[str, ...] = None) -> str:
+def fancy_text(text: str, color: str, styles: Optional[Tuple[str, ...]] = None) -> str:
     """
     Prints string with ANSI colors on terminal.
     """
