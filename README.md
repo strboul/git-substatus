@@ -57,4 +57,10 @@ https://mirrors.edge.kernel.org/pub/software/scm/git/docs/gitglossary.html
 + Run `black git_substatus` https://github.com/psf/black but be careful as it
 overwrites the files, so do it when you have a clean git status.
 
+### Future to-do
+
++ Add a command line option (e.g. `-L`, `--level`) to choose how deep
+  git-substatus should look. The current default is 1 (and can't be changed
+  with an option), and it could be better if it was 2.
+
 </details>
