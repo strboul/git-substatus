@@ -33,6 +33,8 @@ git init && set_local_git_config
 git add -A && git commit -m "Initial commit"
 echo "watermelon" >> fruits.txt
 echo "spinach, lettuce" > vegetables.txt
+git add vegetables.txt
+echo "carrot" >> vegetables.txt
 touch drinks.txt
 rm dairy.txt
 cd .. || exit

@@ -17,7 +17,7 @@ class TestStatus(TestBase):
         self.assertEqual(
             statuses,
             (
-                "2 modified, 1 deleted, 1 untracked",
+                "1 deleted, 1 modified, 1 untracked",
                 "1 untracked & ahead 2, behind 1",
                 "1 unmerged",
                 "1 untracked",

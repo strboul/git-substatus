@@ -86,6 +86,7 @@ class StatusChanges:
         status_details = {
             "??": "untracked",
             "M":  "modified",
+            "MM": "modified",
             "A":  "added",
             "D":  "deleted",
             "R":  "renamed",
