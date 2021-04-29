@@ -90,6 +90,7 @@ class StatusChanges:
             "A":  "added",
             "D":  "deleted",
             "R":  "renamed",
+            "RM": "renamed",
             "UU": "unmerged",
         }
 
