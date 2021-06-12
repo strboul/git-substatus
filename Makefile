@@ -41,6 +41,7 @@ clean:
 release:
 	$(call echo_section,"releasing to PyPi")
 	$(call check_pip_module,"twine")
+	$(call check_pip_module,"wheel")
 	python setup.py sdist bdist_wheel
 	twine check dist/*
 	twine upload dist/*
