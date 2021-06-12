@@ -44,8 +44,8 @@ This module has no module dependency outside
 
 ```bash
 virtualenv venv
-source venv/bin/activate
-pip install -r dev-requirements.txt
+source venv/bin/activate # deactivate
+pip install -r dev-requirements.txt # pip freeze > dev-requirements.txt
 make all
 ```
 
@@ -57,10 +57,12 @@ https://mirrors.edge.kernel.org/pub/software/scm/git/docs/gitglossary.html
 + Run `black git_substatus` https://github.com/psf/black but be careful as it
 overwrites the files, so do it when you have a clean git status.
 
-### Future to-do
+### Sending a PR
 
-+ Add a command line option (e.g. `-L`, `--level`) to choose how deep
-  git-substatus should look. The current default is 1 (and can't be changed
-  with an option), and it could be better if it was 2.
++ Bump up the version - `major.minor.path` (depends on the change) Change the
+  version in the file `git_substatus/__init__.py`.
+
++ Write/update unit tests (where relevant). You can start by adding/modifying a
+  case to generator file `tests/gen_test_repos.sh`.
 
 </details>

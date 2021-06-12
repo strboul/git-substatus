@@ -85,9 +85,11 @@ class StatusChanges:
         # TODO
         status_details = {
             "??": "untracked",
+            "?":  "untracked",
             "M":  "modified",
             "MM": "modified",
             "A":  "added",
+            "AM": "added to index",
             "D":  "deleted",
             "R":  "renamed",
             "RM": "renamed",
