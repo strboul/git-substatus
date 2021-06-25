@@ -89,6 +89,7 @@ class StatusChanges:
             "M":  "modified",
             "MM": "modified",
             "A":  "added",
+            "AD": "added to index",
             "AM": "added to index",
             "D":  "deleted",
             "R":  "renamed",
