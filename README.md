@@ -20,7 +20,6 @@ A command-line tool to inspect the status of git repositories from a directory
 
 + [worktree](https://git-scm.com/docs/git-worktree)
 
-
 ## Usage
 
 <img src="https://user-images.githubusercontent.com/25015317/97109790-8cbd6680-16d5-11eb-9c2e-b1626368ba62.gif" align="center" height="145"/>
@@ -33,8 +32,20 @@ See more at `git-substatus --help`
 pip install git-substatus
 ```
 
-This module has no module dependency outside
-[The Python Standard Library](https://docs.python.org/3/library/index.html).
+Use Docker alternatively:
+
+```bash
+docker run -t -v "$(pwd)":/repo strboul/git-substatus:latest
+```
+
+Also possible to add an alias in the .bashrc or .zshrc e.g.:
+
+```bash
+_git_substatus() {
+  docker run -t -v "$(pwd)":/repo strboul/git-substatus:latest
+}
+alias git-substatus="_git_substatus"
+```
 
 ## Development
 
@@ -66,3 +77,9 @@ overwrites the files, so do it when you have a clean git status.
   case to generator file `tests/gen_test_repos.sh`.
 
 </details>
+
+## Notes
+
+This module has no module dependency outside
+[The Python Standard Library](https://docs.python.org/3/library/index.html).
+
