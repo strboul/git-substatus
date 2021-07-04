@@ -5,8 +5,8 @@
 [![PyPI version](https://badge.fury.io/py/git-substatus.svg)](https://pypi.org/project/git-substatus/)
 <!-- badges: end -->
 
-A command-line tool to inspect the status of git repositories from a directory
-(e.g., a common project folder). You can see:
+A command-line tool to inspect the status of git repositories from a directory,
+like a folder keeping the git projects. You can therefore view:
 
 + status
 
@@ -28,26 +28,32 @@ See more at `git-substatus --help`
 
 ## Installation
 
+Install from the [PyPI](https://pypi.org/project/git-substatus/):
+
 ```bash
 pip install git-substatus
 ```
 
-Use Docker alternatively:
+Alternatively, [Docker](link) image can be used:
 
 ```bash
 docker run -t -v "$(pwd)":/repo strboul/git-substatus:latest
 ```
 
-Also possible to add an alias in the .bashrc or .zshrc e.g.:
+Also, it's possible to add an alias in the `.bashrc` or `.zshrc` to shorten the
+command, e.g.:
 
 ```bash
 _git_substatus() {
-  docker run -t -v "$(pwd)":/repo strboul/git-substatus:latest
+  "$(command -v docker)" run -t -v "$(pwd)":/repo strboul/git-substatus:latest
 }
 alias git-substatus="_git_substatus"
 ```
 
 ## Development
+
+This module has no module dependency outside
+[The Python Standard Library](https://docs.python.org/3/library/index.html).
 
 <details>
 
@@ -77,9 +83,3 @@ overwrites the files, so do it when you have a clean git status.
   case to generator file `tests/gen_test_repos.sh`.
 
 </details>
-
-## Notes
-
-This module has no module dependency outside
-[The Python Standard Library](https://docs.python.org/3/library/index.html).
-
