@@ -19,10 +19,7 @@ class GitSubstatusApplication:
         """
         The main function to execute git-substatus with given arguments.
         """
-        directory = Directory(
-            self.args["path"],
-            bool(self.args["dont_ignore_hidden"])
-        )
+        directory = Directory(self.args["path"], bool(self.args["dont_ignore_hidden"]))
         sub_dirs = directory.get_sub_directories()
 
         repository = Repository(sub_dirs)
@@ -43,7 +40,7 @@ class GitSubstatusApplication:
         stash = Stash(git_repos)
 
         repos = repository.get_repo_names()
-        worktrees = worktree.have_worktree()
+        worktrees = worktree.get_num()
 
         if any(worktrees):
             repo_wt = zip(repos, worktrees)
@@ -57,17 +54,19 @@ class GitSubstatusApplication:
 
         branch_heads = branch.get_branch_head()
         statuses = status.get_status()
-        stashes  = stash.get_stash_num()
+        stashes = stash.get_num()
 
         # Color columns ------------
         def color_comp(elem, **aesthetics):
             return tuple(fancy_text(el, **aesthetics) for el in elem)
 
-        repos = color_comp(repos, color = "blue", styles=("bold",))
+        repos = color_comp(repos, color="blue", styles=("bold",))
 
-        branch_heads = color_comp(branch_heads, color = "white", styles=("underline",))
+        branch_heads = color_comp(branch_heads, color="white", styles=("underline",))
 
-        stashes = color_comp(stashes, color = "cyan")
+        stashes = color_comp(stashes, color="cyan")
+
+        worktrees = color_comp(worktrees, color="magenta")
 
         def colorize_status(s):
             if s == "<sync>":
@@ -76,7 +75,13 @@ class GitSubstatusApplication:
 
         statuses = tuple(colorize_status(status) for status in statuses)
 
-        comp_cols = (repos, branch_heads, statuses, stashes, )
+        comp_cols = (
+            repos,
+            branch_heads,
+            statuses,
+            stashes,
+            worktrees,
+        )
 
         print(fancy_text(f" directory: <{directory.path}>", "gray"))
         display_table(comp_cols)

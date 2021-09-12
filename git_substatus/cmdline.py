@@ -9,6 +9,7 @@ import textwrap
 
 CmdArgs = Union[Dict[str, str], Dict[str, bool], Dict[str, bool]]
 
+
 class CmdLine:
     def get_args(self) -> CmdArgs:
         """
@@ -16,7 +17,7 @@ class CmdLine:
         """
 
         parser = argparse.ArgumentParser(
-            prog = "git-substatus",
+            prog="git-substatus",
             description=textwrap.dedent(
                 """
                 See subfolders' git status
@@ -31,14 +32,11 @@ class CmdLine:
                 <https://git-scm.com/docs/git-worktree>
                 """
             ),
-            formatter_class=argparse.RawTextHelpFormatter
+            formatter_class=argparse.RawTextHelpFormatter,
         )
 
         parser.add_argument(
-            "-v",
-            "--version",
-            action="version",
-            version="%(prog)s " + __version__
+            "-v", "--version", action="version", version="%(prog)s " + __version__
         )
 
         parser.add_argument(
@@ -52,8 +50,9 @@ class CmdLine:
             ),
         )
         parser.add_argument(
-            "--fetch", action="store_true",
-            help="perform git fetch from remote on all sub repositories."
+            "--fetch",
+            action="store_true",
+            help="perform git fetch from remote on all sub repositories.",
         )
         parser.add_argument(
             "--dont-ignore-hidden",

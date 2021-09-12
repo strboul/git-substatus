@@ -1,25 +1,21 @@
 from git_substatus.base import *
 
+from git_substatus.numstatus import NumStatus
 from git_substatus.utils import run_git_command
 
 
-class Worktree:
-    def __init__(self, repos: Tuple[str, ...]):
-        self.repos = repos
+def get_worktree_num(path: str) -> str:
+    list_worktrees: str = run_git_command(path, ["worktree", "list"])
+    worktrees_lst: List[str] = list_worktrees.split("\n")
+    wt = list(filter(None, worktrees_lst))
+    wt_len = len(wt)
+    out = [str(wt_len - 1) if wt_len > 1 else ""][0]
+    return out
 
-    def have_worktree(self) -> Tuple[bool, ...]:
-        worktrees = tuple(self.__worktrees())
-        return worktrees
 
-    def __worktrees(self) -> Iterator[bool]:
-        for repo in self.repos:
-            has_worktree = self.__has_worktree(repo)
-            yield has_worktree
+txt = {"singular": "worktree", "plural": "worktrees"}
 
-    def __has_worktree(self, path: str) -> bool:
-        list_worktrees: str = run_git_command(path, ["worktree", "list"])
-        worktrees_lst: List[str] = list_worktrees.split("\n")
-        worktrees_lst = list(filter(None, worktrees_lst))
-        if len(worktrees_lst) > 1:
-            return True
-        return False
+
+class Worktree(NumStatus):
+    def __init__(self, repos, txt=txt, fun_get_num=get_worktree_num):
+        super().__init__(repos, txt, fun_get_num)

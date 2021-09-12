@@ -13,7 +13,7 @@ class TestStash(TestBase):
         repository = Repository(sub_dirs)
         git_repos = repository.get_git_repository_paths()
         stash = Stash(git_repos)
-        stashes = stash.get_stash_num()
+        stashes = stash.get_num()
         self.assertEqual(stashes, ("", "", "", "", "", "", "2 stashes",))
 
 
