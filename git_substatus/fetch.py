@@ -18,6 +18,6 @@ class Fetch:
 
     def __do_git_fetch(self, path) -> bool:
         repo_name = os.path.basename(path)
-        print(f"Fetching from remote \"{repo_name}\"")
+        print(f'Fetching from remote "{repo_name}"')
         run_git_command(path, ["fetch"])
         return True

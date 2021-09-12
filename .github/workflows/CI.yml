@@ -33,7 +33,7 @@ jobs:
           pip install -r dev-requirements.txt
 
       - name: Test all
-        run: make all
+        run: make
 
       - name: Test coverage
         run: make coverage

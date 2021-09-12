@@ -37,10 +37,10 @@ class StatusChanges:
 
         cls.status_details = status_details
 
-        cls.status_codes        = cls.__get_status_codes()
-        cls.status_count        = cls.__get_status_count()
+        cls.status_codes = cls.__get_status_codes()
+        cls.status_count = cls.__get_status_count()
         cls.mapped_status_count = cls.__get_mapped_status_count()
-        cls.status_changes_txt  = cls.__get_status_changes_txt()
+        cls.status_changes_txt = cls.__get_status_changes_txt()
 
         return cls.status_changes_txt
 
@@ -82,17 +82,17 @@ class StatusChanges:
         !           !    ignored
         -------------------------------------------------
         """
-        # TODO
+        # TODO complete them
         status_details = {
             "??": "untracked",
-            "?":  "untracked",
-            "M":  "modified",
+            "?": "untracked",
+            "M": "modified",
             "MM": "modified",
-            "A":  "added",
+            "A": "added",
             "AD": "added to index",
             "AM": "added to index",
-            "D":  "deleted",
-            "R":  "renamed",
+            "D": "deleted",
+            "R": "renamed",
             "RM": "renamed",
             "UU": "unmerged",
         }
@@ -101,7 +101,7 @@ class StatusChanges:
             for k, v in cls.status_count.items():
 
                 if not k in status_details.keys():
-                    raise KeyError(f"Unknown status mapping: \"{k}\"")
+                    raise KeyError(f'Unknown status mapping: "{k}"')
 
                 mapped_count = (status_details.get(k), v)
                 yield mapped_count
@@ -119,11 +119,7 @@ class StatusChanges:
     def __get_status_changes_txt(cls) -> str:
         txt_arr = [f"{v} {k}" for k, v in cls.mapped_status_count.items()]
         # 'natural sort' the array:
-        txt_sorted = sorted(
-            txt_arr,
-            key = lambda s: int(s.split(" ")[0]),
-            reverse=True
-        )
+        txt_sorted = sorted(txt_arr, key=lambda s: int(s.split(" ")[0]), reverse=True)
         txt = ", ".join(txt_sorted)
         return txt
 
@@ -166,7 +162,7 @@ class Status:
             return "<sync>"
 
         self.status_changes = StatusChanges.get_status_changes(self.status_details)
-        self.ahead_behind   = StatusAheadBehind.get_ahead_behind(self.status_details)
+        self.ahead_behind = StatusAheadBehind.get_ahead_behind(self.status_details)
 
         status_list = [self.status_changes, self.ahead_behind]
 

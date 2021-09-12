@@ -14,7 +14,7 @@ endef
 VERSION := $(shell sed -n "s/__version__ = *\"\([^ ]*\)\"/\1/p" git_substatus/__init__.py)
 
 
-all: typecheck test install clean
+all: typecheck black test install clean
 
 
 install:
@@ -40,6 +40,12 @@ coverage:
 	$(call check_pip_module,"coverage")
 	$(call echo_section,"measuring code coverage")
 	coverage run --source git_substatus -m unittest && coverage report
+
+
+black:
+	$(call check_pip_module,"black")
+	$(call echo_section,"checking code formatting with black")
+	python -m black --check git_substatus
 
 
 clean:

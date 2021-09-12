@@ -37,10 +37,9 @@ def sort_by_basename(arr: Tuple[str, ...]) -> Tuple[str, ...]:
     paths = ("abc/z", "def/a")
     sort_by_basename(paths)
     """
-    sorted_arr = tuple(sorted(
-        arr,
-        key=lambda a: os.path.splitext(os.path.basename(a))[0]
-    ))
+    sorted_arr = tuple(
+        sorted(arr, key=lambda a: os.path.splitext(os.path.basename(a))[0])
+    )
     return sorted_arr
 
 
@@ -51,22 +50,22 @@ def fancy_text(text: str, color: str, styles: Optional[Tuple[str, ...]] = None) 
 
     ansi_codes = {
         "parameters": {
-            "reset":     "0",
-            "bold":      "1",
-            "italic":    "3",
+            "reset": "0",
+            "bold": "1",
+            "italic": "3",
             "underline": "4",
         },
         "colors": {
-            "black":   "30",
-            "red":     "31",
-            "green":   "32",
-            "yellow":  "33",
-            "blue":    "34",
+            "black": "30",
+            "red": "31",
+            "green": "32",
+            "yellow": "33",
+            "blue": "34",
             "magenta": "35",
-            "cyan":    "36",
-            "white":   "37",
-            "gray":    "90",
-        }
+            "cyan": "36",
+            "white": "37",
+            "gray": "90",
+        },
     }
 
     # wrap escape characters:
@@ -124,7 +123,6 @@ def run_git_command(path: str, what: List[str]) -> str:
 
 
 def display_table(cols):
-
     def get_max_char_width(x: Tuple[str, ...]) -> int:
         return max(map(len, x))
 
@@ -142,11 +140,11 @@ def display_table(cols):
     padded_cols = get_padded_cols(cols)
 
     def print_cols(padded_cols, row_prefix="\u2022"):
-        len_cols = len(padded_cols[0])
-        len_rows = len(padded_cols)
-        for i in range(len_cols):
+        len_rows = len(padded_cols[0])
+        len_cols = len(padded_cols)
+        for i in range(len_rows):
             row = tuple(zip(*padded_cols))[i]
-            fmt_txt = row_prefix + (" {}  " * len_rows).rstrip()
+            fmt_txt = row_prefix + (" {}  " * len_cols).rstrip()
             print(fmt_txt.format(*row))
         return None
 

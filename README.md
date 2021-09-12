@@ -35,6 +35,12 @@ Install from the [PyPI](https://pypi.org/project/git-substatus/):
 pip install git-substatus
 ```
 
+Install from the repo:
+
+```bash
+pip install git+https://github.com/strboul/git-substatus.git
+```
+
 * * *
 
 Alternatively, the [Docker](https://hub.docker.com/r/strboul/git-substatus)
@@ -65,7 +71,7 @@ This module has no module dependency outside
 
 <details>
 
-### Run tests
+### Run tests && debugging
 
 ```bash
 virtualenv venv
@@ -74,13 +80,16 @@ pip install -r dev-requirements.txt # pip freeze > dev-requirements.txt
 make all
 ```
 
+Put a `breakpoint()` at a relevant place and run:
+
+```bash
+make test
+```
+
 ### Add new methods
 
 + Use the reference to name the functions/methods in the module:
 https://mirrors.edge.kernel.org/pub/software/scm/git/docs/gitglossary.html
-
-+ Run `black git_substatus` https://github.com/psf/black but be careful as it
-overwrites the files, so do it when you have a clean git status.
 
 ### Sending a PR
 
