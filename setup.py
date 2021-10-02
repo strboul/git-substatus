@@ -23,7 +23,7 @@ setup(
     long_description_content_type="text/markdown",
     keywords="git sub status fetch directory folder",
     url="https://github.com/strboul/git-substatus",
-    python_requires=">=3.7",
+    python_requires=">=3.8",
     license="MIT",
     packages=["git_substatus"],
     entry_points = {
