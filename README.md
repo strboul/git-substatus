@@ -71,6 +71,8 @@ This module has no module dependency outside
 
 <details>
 
+<summary>Development docs</summary>
+
 ### Run tests && debugging
 
 ```bash
@@ -98,5 +100,22 @@ https://mirrors.edge.kernel.org/pub/software/scm/git/docs/gitglossary.html
 
 + Write/update unit tests (where relevant). You can start by adding/modifying a
   case to generator file `tests/gen_test_repos.sh`.
+
+### Release
+
+*(needs credentials)*
+
++ Release to PyPi
+
+```bash
+make release-pypi
+```
+
++ Release to Docker Hub
+
+```bash
+make docker-build
+make docker-release
+```
 
 </details>

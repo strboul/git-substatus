@@ -57,7 +57,7 @@ clean:
 
 
 # release with twine: https://twine.readthedocs.io/en/latest/#using-twine
-release:
+release-pypi:
 	$(call echo_section,"releasing to PyPi")
 	$(call check_pip_module,"twine")
 	$(call check_pip_module,"wheel")
