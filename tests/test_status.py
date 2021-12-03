@@ -1,12 +1,10 @@
-from tests.base import *
-
 from git_substatus.directory import Directory
 from git_substatus.repository import Repository
-
 from git_substatus.status import Status
+from tests.base import *
+
 
 class TestStatus(TestBase):
-
     def test_get_status(self):
         directory = Directory(self.temp_test_dir, False)
         sub_dirs = directory.get_sub_directories()
@@ -24,7 +22,7 @@ class TestStatus(TestBase):
                 "<sync>",
                 "<sync>",
                 "1 deleted, 1 renamed",
-            )
+            ),
         )
 
 

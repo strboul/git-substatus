@@ -1,9 +1,13 @@
+import os
+import re
+
 from setuptools import setup
-import os, re
+
 
 def readme():
     with open("README.md") as f:
         return f.read()
+
 
 def version():
     """
@@ -13,6 +17,7 @@ def version():
     with open(path, "rb") as f:
         init_py = f.read().decode("utf-8")
     return re.search("__version__ = ['\"]([^'\"]+)['\"]", init_py).group(1)
+
 
 setup(
     name="git-substatus",
@@ -26,7 +31,7 @@ setup(
     python_requires=">=3.8",
     license="MIT",
     packages=["git_substatus"],
-    entry_points = {
+    entry_points={
         "console_scripts": ["git-substatus=git_substatus.__main__:main"],
-    }
+    },
 )

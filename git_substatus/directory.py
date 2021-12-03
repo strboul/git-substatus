@@ -1,15 +1,14 @@
 from git_substatus.base import *
-
-from git_substatus.utils import sort_by_basename, list_directories
+from git_substatus.utils import list_directories, sort_by_basename
 
 
 class Directory:
-    def __init__(self, path: str, dont_ignore_hidden: bool):
+    def __init__(self, path: str, include_hidden: bool):
         if not isinstance(path, str):
             raise TypeError
 
         self._path = path
-        self.dont_ignore_hidden = dont_ignore_hidden
+        self.include_hidden = include_hidden
 
     @property
     def path(self) -> str:
@@ -27,7 +26,7 @@ class Directory:
         sub_dirs = list_directories(self.path)
         sub_dirs_path = tuple(os.path.join(self.path, sb) for sb in sub_dirs)
         for sdp in sub_dirs_path:
-            if self.dont_ignore_hidden:
+            if self.include_hidden:
                 yield sdp
             else:
                 if not os.path.basename(sdp).startswith("."):
