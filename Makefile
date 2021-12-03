@@ -64,7 +64,7 @@ release-pypi:
 	python setup.py sdist bdist_wheel
 	twine check dist/*
 	twine upload dist/*
-	$(RM) -r build/ dist/ git_substatus.egg-info/
+	$(RM) -r build/ dist/ *.egg-info/
 
 
 docker-build:

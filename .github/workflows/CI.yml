@@ -9,15 +9,28 @@ on:
       - master
 
 jobs:
-  tests:
+
+  pre-commit:
+    name: "pre-commit checks"
     runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/setup-python@v2
+    - uses: pre-commit/action@v2.0.3
+
+  tests:
+    name: "Run all tests Python v.${{ matrix.python-version }}"
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+
     strategy:
       matrix:
         python-version:
           - "3.8"
           - "3.9"
+          - "3.10"
 
-    name: Python v.${{ matrix.python-version }}
     steps:
       - uses: actions/checkout@v2
 

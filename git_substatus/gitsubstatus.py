@@ -1,14 +1,12 @@
 from git_substatus.base import *
-
-from git_substatus.directory import Directory
-from git_substatus.repository import Repository
-from git_substatus.worktree import Worktree
-from git_substatus.fetch import Fetch
 from git_substatus.branch import Branch
-from git_substatus.status import Status
+from git_substatus.directory import Directory
+from git_substatus.fetch import Fetch
+from git_substatus.repository import Repository
 from git_substatus.stash import Stash
-
+from git_substatus.status import Status
 from git_substatus.utils import display_table, fancy_text
+from git_substatus.worktree import Worktree
 
 
 class GitSubstatusApplication:
@@ -19,7 +17,7 @@ class GitSubstatusApplication:
         """
         The main function to execute git-substatus with given arguments.
         """
-        directory = Directory(self.args["path"], bool(self.args["dont_ignore_hidden"]))
+        directory = Directory(self.args["path"], bool(self.args["include_hidden"]))
         sub_dirs = directory.get_sub_directories()
 
         repository = Repository(sub_dirs)

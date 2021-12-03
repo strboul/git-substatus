@@ -1,0 +1,42 @@
+# See https://pre-commit.com for more information
+# See https://pre-commit.com/hooks.html for more hooks
+fail_fast: true
+repos:
+-   repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.0.1
+    hooks:
+    -   id: trailing-whitespace
+    -   id: end-of-file-fixer
+    -   id: check-yaml
+    -   id: check-added-large-files
+        args: ['--maxkb=200']
+    -   id: check-case-conflict
+    -   id: check-merge-conflict
+    -   id: check-executables-have-shebangs
+    -   id: check-shebang-scripts-are-executable
+    # Python specific
+    -   id: check-ast
+        description: "simply checks whether the files parse as valid python."
+    -   id: check-docstring-first
+        description: "checks a common error of defining a docstring after code."
+    -   id: debug-statements
+        description: "checks for debugger imports and py37+ `breakpoint()` calls in python source."
+    -   id: name-tests-test
+        description: "(django style) assert that files in tests/ end in _test.py."
+        args: ['--django']
+        exclude: "tests/base.py"
+
+-   repo: https://github.com/pycqa/isort
+    rev: 5.10.1
+    hooks:
+      - id: isort
+        description: "A Python utility / library to sort imports."
+        name: "[py] isort"
+        args: ["--profile", "black"]
+
+-   repo: https://github.com/psf/black
+    rev: 21.11b1
+    hooks:
+    -   id: black
+        description: "The uncompromising Python code formatter"
+        name: "[py] black"

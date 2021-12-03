@@ -1,6 +1,8 @@
+black
 coverage
+isort
 mypy
 mypy-extensions
+pre-commit
 typed-ast
 typing-extensions
-black

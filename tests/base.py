@@ -1,7 +1,7 @@
-import unittest
-import tempfile
 import os
 import subprocess
+import tempfile
+import unittest
 
 
 class TestBase(unittest.TestCase):
@@ -22,7 +22,9 @@ class TestBase(unittest.TestCase):
         cmd = test_path + " > /dev/null 2>&1"
         subprocess.check_output(cmd, shell=True)
 
-        cls.temp_test_dir = os.path.join(cls.temp_dir.name, "tests", "generated-test-proj-dir")
+        cls.temp_test_dir = os.path.join(
+            cls.temp_dir.name, "tests", "generated-test-proj-dir"
+        )
 
         os.chdir(cls.temp_test_dir)
 

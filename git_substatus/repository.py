@@ -1,5 +1,4 @@
 from git_substatus.base import *
-
 from git_substatus.utils import list_directories, run_git_command
 
 

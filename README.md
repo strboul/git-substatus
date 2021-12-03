@@ -2,6 +2,7 @@
 
 <!-- badges: start -->
 [![CI status](https://github.com/strboul/git-substatus/workflows/CI/badge.svg)](https://github.com/strboul/git-substatus/actions)
+[![pre-commit](https://img.shields.io/badge/pre--commit-enabled-success)](https://github.com/strboul/git-substatus/blob/master/.pre-commit-config.yaml)
 [![PyPI version](https://img.shields.io/pypi/v/git-substatus?color=%230073b7&label=pypi)](https://pypi.org/project/git-substatus/)
 [![hub.docker.com](https://img.shields.io/docker/v/strboul/git-substatus?color=%230db7ed&label=docker)](https://hub.docker.com/r/strboul/git-substatus)
 <!-- badges: end -->
@@ -72,6 +73,15 @@ This module has no module dependency outside
 <details>
 
 <summary>Development docs</summary>
+
+### pre-commit
+
+Run pre-commit git hooks on every commit that run checks against the files
+added to a commit.
+
+Upon cloning the repo, set up `pre-commit`:
+- Install pre-commit https://pre-commit.com/#installation
+- Run `pre-commit install` that installs the hook scripts at `.git/hooks`
 
 ### Run tests && debugging
 

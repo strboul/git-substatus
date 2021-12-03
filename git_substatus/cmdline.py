@@ -1,11 +1,9 @@
-from git_substatus.base import *
-
-from git_substatus import __version__
-
-from git_substatus.utils import exit_program
-
 import argparse
 import textwrap
+
+from git_substatus import __version__
+from git_substatus.base import *
+from git_substatus.utils import exit_program
 
 CmdArgs = Union[Dict[str, str], Dict[str, bool], Dict[str, bool]]
 
@@ -18,7 +16,7 @@ class CmdLine:
 
         parser = argparse.ArgumentParser(
             prog="git-substatus",
-            description=textwrap.dedent(
+            description=CmdLine.__style_triple_quoted_str(
                 """
                 See subfolders' git status
                 ===========================
@@ -42,7 +40,7 @@ class CmdLine:
         parser.add_argument(
             "path",
             nargs="?",
-            help=textwrap.dedent(
+            help=CmdLine.__style_triple_quoted_str(
                 """
                 a path to where you want to see git substatuses. If empty, the
                 current working directory is selected.
@@ -50,18 +48,21 @@ class CmdLine:
             ),
         )
         parser.add_argument(
-            "--fetch",
+            "--include-hidden",
             action="store_true",
-            help="perform git fetch from remote on all sub repositories.",
+            help=CmdLine.__style_triple_quoted_str(
+                """
+                repositories starting with a dot (.) are included.
+                """
+            ),
         )
         parser.add_argument(
-            "--dont-ignore-hidden",
+            "--fetch",
             action="store_true",
-            help=textwrap.dedent(
+            help=CmdLine.__style_triple_quoted_str(
                 """
-                if selected, the repositories starting with a dot are no longer
-                ignored.
-                """
+            perform git fetch from remote on all sub repositories.
+            """
             ),
         )
 
@@ -72,7 +73,7 @@ class CmdLine:
         args_out = {
             "path": path_arg,
             "fetch": args.fetch,
-            "dont_ignore_hidden": args.dont_ignore_hidden,
+            "include_hidden": args.include_hidden,
         }
 
         return args_out
@@ -92,3 +93,7 @@ class CmdLine:
                 )
 
         return settled_path_arg
+
+    @staticmethod
+    def __style_triple_quoted_str(string: str) -> str:
+        return textwrap.dedent(string).strip()

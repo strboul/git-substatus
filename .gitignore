@@ -5,3 +5,8 @@ __pycache__/
 .venv/
 .coverage
 .vscode/
+
+build/
+dist/
+*.egg-info/
+*.egg
