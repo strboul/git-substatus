@@ -48,7 +48,7 @@ Alternatively, the [Docker](https://hub.docker.com/r/strboul/git-substatus)
 image can be used:
 
 ```bash
-docker run --rm -t -v "$(pwd)":/"$(pwd)" -w "$(pwd)" strboul/git-substatus:latest <optional-path>
+docker run --rm -t -v "$(pwd)":/"$(pwd)" -w "$(pwd)" strboul/git-substatus:latest
 ```
 
 To shorten the command, it's also possible to add an alias in the `.bashrc` or
@@ -61,9 +61,9 @@ _git_substatus() {
 alias git-substatus="_git_substatus"
 ```
 
-Benchmark: I measured that the container solution is about 70% slower than the
-native operation, most likely due to the overhead; however, the container is
-still useful when portability matters.
+Benchmark: it's measured that the container solution is ~70% slower than the
+native operation due to the overhead; however, the container solution is still
+useful for portability matters.
 
 ## Development
 
@@ -74,6 +74,16 @@ This module has no module dependency outside
 
 <summary>Development docs</summary>
 
+### Versioning and release
+
+1. Bump up the `__version__` in `git_substatus/__init__.py` and commit the
+   change in the batch where you changed the files.
+
+2. (For the codeowner) Create a version tag with `make tag-create` number. Push
+   the tag to the origin with `make tag-push`. Upon the push, the release
+   workflow will be triggered that distributes the new version to the
+   platforms, like *PyPI*, *DockerHub*.
+
 ### pre-commit
 
 Run pre-commit git hooks on every commit that run checks against the files
@@ -82,6 +92,11 @@ added to a commit.
 Upon cloning the repo, set up `pre-commit`:
 - Install pre-commit https://pre-commit.com/#installation
 - Run `pre-commit install` that installs the hook scripts at `.git/hooks`
+
+### Add tests
+
++ Write/update unit tests (if relevant). You can start by adding/modifying a
+  case to generator file `tests/gen_test_repos.sh`.
 
 ### Run tests && debugging
 
@@ -102,30 +117,5 @@ make test
 
 + Use the reference to name the functions/methods in the module:
 https://mirrors.edge.kernel.org/pub/software/scm/git/docs/gitglossary.html
-
-### Sending a PR
-
-+ Bump up the version - `major.minor.path` (depends on the change) Change the
-  version in the file `git_substatus/__init__.py`.
-
-+ Write/update unit tests (where relevant). You can start by adding/modifying a
-  case to generator file `tests/gen_test_repos.sh`.
-
-### Release
-
-*(needs credentials)*
-
-+ Release to PyPi
-
-```bash
-make release-pypi
-```
-
-+ Release to Docker Hub
-
-```bash
-make docker-build
-make docker-release
-```
 
 </details>
