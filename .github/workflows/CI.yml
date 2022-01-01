@@ -1,17 +1,11 @@
 name: CI
 
-on:
-  push:
-    branches:
-      - master
-  pull_request:
-    branches:
-      - master
+on: [push, pull_request]
 
 jobs:
 
   pre-commit:
-    name: "pre-commit checks"
+    name: pre-commit checks
     runs-on: ubuntu-latest
     timeout-minutes: 2
     steps:
@@ -20,7 +14,7 @@ jobs:
     - uses: pre-commit/action@v2.0.3
 
   tests:
-    name: "Run all tests Python v.${{ matrix.python-version }}"
+    name: Run tests with python ${{ matrix.python-version }}
     runs-on: ubuntu-latest
     timeout-minutes: 2
 
