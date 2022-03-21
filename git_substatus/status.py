@@ -20,7 +20,8 @@ class StatusDetails:
     @classmethod
     def __get_details_text(cls) -> str:
         cmd = run_git_command(cls.path, ["status", "-sb"])
-        return cmd
+        output = cmd["output"]
+        return output
 
 
 class StatusChanges:

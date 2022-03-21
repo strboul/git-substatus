@@ -1,6 +1,6 @@
 from git_substatus.base import *
 
-TextType = TypedDict("TextType", {"singular": str, "plural": str})
+TypeText = TypedDict("TypeText", {"singular": str, "plural": str})
 
 
 class NumStatus:
@@ -9,7 +9,7 @@ class NumStatus:
     e.g. stash, worktree etc.
     """
 
-    def __init__(self, repos: Tuple[str, ...], txt: TextType, fun_get_num: Callable):
+    def __init__(self, repos: Tuple[str, ...], txt: TypeText, fun_get_num: Callable):
         self.repos = repos
         self.txt = txt
         self.fun_get_num = fun_get_num

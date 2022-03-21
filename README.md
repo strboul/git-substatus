@@ -2,6 +2,7 @@
 
 <!-- badges: start -->
 [![CI status](https://github.com/strboul/git-substatus/workflows/CI/badge.svg)](https://github.com/strboul/git-substatus/actions)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 [![pre-commit](https://img.shields.io/badge/pre--commit-enabled-success)](https://github.com/strboul/git-substatus/blob/master/.pre-commit-config.yaml)
 [![PyPI version](https://img.shields.io/pypi/v/git-substatus?color=%230073b7&label=pypi)](https://pypi.org/project/git-substatus/)
 [![hub.docker.com](https://img.shields.io/docker/v/strboul/git-substatus?color=%230db7ed&label=docker)](https://hub.docker.com/r/strboul/git-substatus)
@@ -27,6 +28,33 @@ like a projects folder keeping the git projects. You can therefore view:
 <img src="https://user-images.githubusercontent.com/25015317/97109790-8cbd6680-16d5-11eb-9c2e-b1626368ba62.gif" align="center" height="145"/>
 
 See more at `git-substatus --help`
+
+<!-- help-output: start -->
+```
+usage: git-substatus [-h] [-v] [--include-hidden] [--fetch] [path]
+
+See subfolders' git status
+===========================
+
+The output consists of four columns:
+
+repo name | branch head | status | git stashes (if any)
+
+The string (*WT) seen next to the repo names shows that the
+repo has some git worktrees. See more:
+<https://git-scm.com/docs/git-worktree>
+
+positional arguments:
+  path              a path to where you want to see git substatuses. If empty, the
+                    current working directory is selected.
+
+optional arguments:
+  -h, --help        show this help message and exit
+  -v, --version     show program's version number and exit
+  --include-hidden  repositories starting with a dot (.) are included.
+  --fetch           perform git fetch from remote on all sub repositories.
+```
+<!-- help-output: end -->
 
 ## Installation
 
@@ -67,7 +95,7 @@ useful for portability matters.
 
 ## Development
 
-This module has no module dependency outside
+This tool has **no module dependency** outside
 [The Python Standard Library](https://docs.python.org/3/library/index.html).
 
 <details>

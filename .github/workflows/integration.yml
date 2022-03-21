@@ -1,0 +1,27 @@
+name: Integration
+
+on:
+  push:
+    branches:
+      - "master"
+
+jobs:
+
+  test_docker:
+    name: Build and test Docker image
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Build the Docker image
+        run: make VERSION=test docker-build
+
+      - name: Docker container can be run
+        run: |
+          ./tests/gen_test_repos.sh && \
+            docker run --rm -t \
+              -v "$(pwd)":/"$(pwd)" \
+              -w "$(pwd)" strboul/git-substatus:test \
+              tests/generated-test-proj-dir

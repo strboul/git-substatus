@@ -17,7 +17,7 @@ VERSION := $(shell ./get_version.sh __version__)
 PY_VERSION := $(shell ./get_version.sh __py_version__)
 
 
-all: typecheck black test install clean
+all: typecheck black test install docker-build clean
 
 
 install:
@@ -48,7 +48,13 @@ coverage:
 black:
 	$(call check_pip_module,"black")
 	$(call echo_section,"checking code formatting with black")
-	python -m black --check git_substatus
+	python -m black --check .
+
+
+black-apply:
+	$(call check_pip_module,"black")
+	$(call echo_section,"applying code formatting with black")
+	python -m black .
 
 
 clean:
@@ -56,7 +62,8 @@ clean:
 	find . -depth -name __pycache__ -exec rm -rf {} \; && \
 	find . -depth -name *.pyc -exec rm -rf {} \; && \
 	find . -depth -name *.mypy_cache -exec rm -rf {} \; && \
-	find . -depth -name .coverage -exec rm {} \;
+	find . -depth -name .coverage -exec rm {} \; && \
+	rm -rf tests/generated-test-proj-dir
 
 
 tag-create:

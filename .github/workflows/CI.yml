@@ -4,26 +4,61 @@ on: [push, pull_request]
 
 jobs:
 
-  pre-commit:
+  prepare:
+    name: "Prepare for CI"
+    runs-on: ubuntu-latest
+    timeout-minutes: 1
+
+    outputs:
+      py_version: ${{ steps.versions.outputs.py_version }}
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Get versions
+        id: versions
+        run: |
+          py_version="$(./get_version.sh __py_version__)"
+          echo "::set-output name=py_version::$py_version"
+
+  pre_commit:
     name: pre-commit checks
     runs-on: ubuntu-latest
     timeout-minutes: 2
-    steps:
-    - uses: actions/checkout@v2
-    - uses: actions/setup-python@v2
-    - uses: pre-commit/action@v2.0.3
 
-  tests:
-    name: Run tests with python ${{ matrix.python-version }}
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+      - uses: pre-commit/action@v2.0.3
+
+  check_readme:
+    name: "Check README help text"
+    needs: [ prepare ]
     runs-on: ubuntu-latest
     timeout-minutes: 2
 
-    strategy:
-      matrix:
-        python-version:
-          - "3.8"
-          - "3.9"
-          - "3.10"
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+        with:
+          python-version: ${{ needs.prepare.outputs.version }}
+
+      - name: Install
+        run: make install
+
+      - name: Check if help text in README is up-to-date
+        run: |
+          python .github/scripts/check_text.py \
+            --file "README.md" \
+            --pattern_start '<!-- help-output: start -->\n' \
+            --pattern_end '<!-- help-output: end -->\n' \
+            --command "git-substatus --help"
+
+  tests:
+    name: "Run tests"
+    needs: [ prepare ]
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
 
     steps:
       - uses: actions/checkout@v2
@@ -31,7 +66,7 @@ jobs:
       - name: Setup python
         uses: actions/setup-python@v2
         with:
-          python-version: ${{ matrix.python-version }}
+          python-version: ${{ needs.prepare.outputs.version }}
 
       - name: Install dev dependencies
         run: |

@@ -6,11 +6,12 @@ LABEL HOMEPAGE="https://github.com/strboul/git-substatus"
 
 RUN apk add --update --no-cache --no-progress git
 
-ARG CONTAINER_PATH="/opt/git-substatus/"
-RUN mkdir -p "$CONTAINER_PATH"
-COPY setup.py README.md "$CONTAINER_PATH"
-COPY git_substatus/ "$CONTAINER_PATH"/git_substatus
-RUN cd "$CONTAINER_PATH" && \
-  python -m pip install --upgrade pip
+ARG INSTALL_PATH="/opt/git-substatus/"
+RUN mkdir -p "$INSTALL_PATH"
+COPY setup.py README.md get_version.sh "$INSTALL_PATH"
+COPY git_substatus/ "$INSTALL_PATH"/git_substatus
+RUN cd "$INSTALL_PATH" && \
+  python -m pip install --upgrade pip .
+RUN rm -rf "$INSTALL_PATH"
 
 ENTRYPOINT ["git-substatus"]

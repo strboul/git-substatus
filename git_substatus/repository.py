@@ -1,5 +1,5 @@
 from git_substatus.base import *
-from git_substatus.utils import list_directories, run_git_command
+from git_substatus.utils import run_git_command
 
 
 class Repository:
@@ -26,7 +26,7 @@ class Repository:
 
     def __is_git_repository(self, path: str) -> bool:
         cmd = run_git_command(path, ["rev-parse", "--show-toplevel"])
-        cmd = "".join(cmd.split())
-        base_cmd = os.path.basename(cmd)
+        output = "".join(cmd["output"].split())
+        base_cmd = os.path.basename(output)
         base_path = os.path.basename(path)
         return bool(True if base_cmd == base_path else False)

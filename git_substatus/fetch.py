@@ -12,11 +12,23 @@ class Fetch:
         """
         for repo in self.repos:
             self.__do_git_fetch(repo)
-        print("All fetched.")
         return True
 
     def __do_git_fetch(self, path) -> bool:
-        repo_name = os.path.basename(path)
-        print(f'Fetching from remote "{repo_name}"')
-        run_git_command(path, ["fetch"])
+        remote_url = self.__get_remote_url(path)
+        if not remote_url["status"]:
+            repo_name = os.path.basename(path)
+            print(f'can\'t fetch "{repo_name}" remote not exist')
+            return False
+        print(f'fetching from remote "{remote_url["output"]}"', end="")
+        res = run_git_command(path, ["fetch"])
+        if not res["status"]:
+            print(" ❌")
+            return False
+        print(" ✅")
         return True
+
+    def __get_remote_url(self, path) -> Dict:
+        cmd = run_git_command(path, ["config", "--get", "remote.origin.url"])
+        cmd["output"] = cmd["output"].strip("\n")
+        return cmd

@@ -20,5 +20,5 @@ class Branch:
 
     def __current_branch_name(self, path: str) -> str:
         cmd = run_git_command(path, ["symbolic-ref", "--short", "HEAD"])
-        out = cmd.replace("\n", "")
+        out = cmd["output"].replace("\n", "")
         return out
