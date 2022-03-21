@@ -5,8 +5,8 @@ from git_substatus.utils import run_git_command
 
 def get_stash_num(path: str) -> str:
     cmd = run_git_command(path, ["rev-list", "--walk-reflogs", "--count", "refs/stash"])
-    out = cmd.replace("\n", "")
-    return out
+    output = cmd["output"].replace("\n", "")
+    return output
 
 
 txt = {"singular": "stash", "plural": "stashes"}

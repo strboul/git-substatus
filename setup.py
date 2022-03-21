@@ -1,5 +1,4 @@
-import os
-import re
+import subprocess
 
 from setuptools import setup
 
@@ -9,26 +8,28 @@ def readme():
         return f.read()
 
 
-def version():
-    """
-    Return package version as listed in `__version__` in `__init__.py`.
-    """
-    path = os.path.join("git_substatus", "__init__.py")
-    with open(path, "rb") as f:
-        init_py = f.read().decode("utf-8")
-    return re.search("__version__ = ['\"]([^'\"]+)['\"]", init_py).group(1)
+def get_versions():
+    def get_version(variable):
+        cmd = ["./get_version.sh", variable]
+        run = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL)
+        return run.stdout.decode("utf-8").strip("\n")
+
+    out = {}
+    out["version"] = get_version("__version__")
+    out["py_version"] = get_version("__py_version__")
+    return out
 
 
 setup(
     name="git-substatus",
     author="Metin Yazici",
-    version=version(),
+    version=get_versions()["version"],
     description="Display the 'git status' in sub-directories",
     long_description=readme(),
     long_description_content_type="text/markdown",
     keywords="git sub status fetch directory folder",
     url="https://github.com/strboul/git-substatus",
-    python_requires=">=3.8",
+    python_requires=f">={get_versions()['py_version']}",
     license="MIT",
     packages=["git_substatus"],
     entry_points={

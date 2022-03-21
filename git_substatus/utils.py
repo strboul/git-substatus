@@ -103,7 +103,7 @@ def check_git_installed():
         exit_program("git is not found")
 
 
-def run_git_command(path: str, what: List[str]) -> str:
+def run_git_command(path: str, what: List[str]) -> Dict:
     """
     Run a git command in a path.
 
@@ -115,11 +115,11 @@ def run_git_command(path: str, what: List[str]) -> str:
     of the current working directory.
     """
     cmd = list(flatten(["git", "-C", os.path.expanduser(path), what]))
-    run = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL)
-    if run.returncode is not 0:
-        return ""
-    out = run.stdout.decode("utf-8")
-    return out
+    proc = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL)
+    res = {"status": False, "output": ""}
+    res["status"] = True if proc.returncode == 0 else False
+    res["output"] = proc.stdout.decode("utf-8")
+    return res
 
 
 def display_table(cols):

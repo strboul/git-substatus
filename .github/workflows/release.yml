@@ -3,7 +3,7 @@ name: Release
 on:
   push:
     tags:
-      - "v*"
+      - "v*.*.*"
 
 jobs:
 
@@ -47,21 +47,18 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           body: |
-            # v${{ needs.prepare.outputs.version }}
+            Install this specific release with:
 
-            ## PyPI
+            - PyPI
 
             ```bash
             pip install git-substatus==${{ needs.prepare.outputs.version }}
             ```
-
-            ## DockerHub
+            - Dockerhub
 
             ```bash
             docker run --rm -t -v "$(pwd)":/"$(pwd)" -w "$(pwd)" strboul/git-substatus:${{ needs.prepare.outputs.version }}
             ```
-            # TODO which files actually?
-          files: dist/
 
   publish_pypi:
     name: "Publish to PyPI (https://pypi.org/project/git-substatus/)"
