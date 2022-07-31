@@ -20,8 +20,7 @@ jobs:
 
       - name: Docker container can be run
         run: |
-          ./tests/generate_test_repos.sh && \
-            docker run --rm -t \
-              -v "$(pwd)":/"$(pwd)" \
-              -w "$(pwd)" strboul/git-substatus:test \
-              tests/generated-test-proj-dir
+          docker run --rm \
+            -v "$(pwd)/scripts/docker_test_entrypoint.sh:/docker_test_entrypoint.sh" \
+            --entrypoint "/docker_test_entrypoint.sh" \
+            strboul/git-substatus:test

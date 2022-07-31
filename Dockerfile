@@ -8,7 +8,8 @@ RUN apk add --update --no-cache --no-progress git
 
 ARG INSTALL_PATH="/opt/git-substatus/"
 RUN mkdir -p "$INSTALL_PATH"
-COPY setup.py README.md get_version.sh "$INSTALL_PATH"
+COPY setup.py README.md "$INSTALL_PATH"
+COPY scripts/ "$INSTALL_PATH"/scripts
 COPY git_substatus/ "$INSTALL_PATH"/git_substatus
 RUN cd "$INSTALL_PATH" && \
   python -m pip install --upgrade pip .

@@ -13,8 +13,8 @@ define ask_prompt
 endef
 
 
-VERSION := $(shell ./get_version.sh __version__)
-PY_VERSION := $(shell ./get_version.sh __py_version__)
+VERSION := $(shell ./scripts/get_version.sh __version__)
+PY_VERSION := $(shell ./scripts/get_version.sh __py_version__)
 
 
 all: typecheck black test install docker-build clean
@@ -33,7 +33,7 @@ coverage: gentest runcoverage clean
 
 gentest:
 	$(call echo_section,"generate test repos")
-	./tests/generate_test_repos.sh
+	./scripts/generate_test_repos.sh
 
 
 unittest:
@@ -67,11 +67,15 @@ black-apply:
 
 clean:
 	$(call echo_section,"cleaning")
-	find . -depth -name __pycache__ -exec rm -rf {} \; && \
-	find . -depth -name *.pyc -exec rm -rf {} \; && \
-	find . -depth -name *.mypy_cache -exec rm -rf {} \; && \
-	find . -depth -name .coverage -exec rm {} \; && \
-	rm -rf tests/generated-test-proj-dir
+	# directories
+	find . -depth -name __pycache__ -exec rm -rf {} \;
+	find . -depth -name *.pyc -exec rm -rf {} \;
+	find . -depth -name *.mypy_cache -exec rm -rf {} \;
+	find . -depth -name *.egg-info -exec rm -rf {} \;
+	# files
+	find . -depth -name .coverage -exec rm {} \;
+	# absolute path files
+	rm -rf tests/generated-test-proj-dir;
 
 
 tag-create:

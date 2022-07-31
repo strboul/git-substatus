@@ -131,7 +131,7 @@ Upon cloning the repo, set up `pre-commit`:
 ### Add tests
 
 + Write/update unit tests (if relevant). You can start by adding/modifying a
-  case to generator file `tests/generate_test_repos.sh`.
+  case to generator file of `scripts/generate_test_repos.sh`.
 
 ### Run tests && debugging
 

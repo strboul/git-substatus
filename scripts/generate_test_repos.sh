@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/sh
 # This script creates dummy git repositories, which each of them can represent
 # a different test case. It is meant to be called from the unit tests but it
 # can also be called independently.

@@ -18,7 +18,7 @@ jobs:
       - name: Get versions
         id: versions
         run: |
-          py_version="$(./get_version.sh __py_version__)"
+          py_version="$(./scripts/get_version.sh __py_version__)"
           echo "::set-output name=py_version::$py_version"
 
   pre_commit:
