@@ -13,7 +13,7 @@ jobs:
       py_version: ${{ steps.versions.outputs.py_version }}
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Get versions
         id: versions
@@ -23,13 +23,16 @@ jobs:
 
   pre_commit:
     name: pre-commit checks
+    needs: [ prepare ]
     runs-on: ubuntu-latest
     timeout-minutes: 2
 
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-python@v2
-      - uses: pre-commit/action@v2.0.3
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: ${{ needs.prepare.outputs.py_version }}
+      - uses: pre-commit/action@v3.0.0
 
   check_readme:
     name: "Check README help text"
@@ -38,21 +41,24 @@ jobs:
     timeout-minutes: 2
 
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-python@v2
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
         with:
-          python-version: ${{ needs.prepare.outputs.version }}
+          python-version: ${{ needs.prepare.outputs.py_version }}
 
       - name: Install
         run: make install
 
       - name: Check if help text in README is up-to-date
         run: |
-          python .github/scripts/check_text.py \
+          # TODO: change branch name
+          wget https://raw.githubusercontent.com/strboul/dotfiles/v0.4.4/bin/command-output-in-file
+          chmod +x command-output-in-file
+          ./command-output-in-file \
             --file "README.md" \
-            --pattern_start '<!-- help-output: start -->\n' \
-            --pattern_end '<!-- help-output: end -->\n' \
-            --command "git-substatus --help"
+            --command "git-substatus --help" \
+            --marker-start '<!-- help-output: start -->\n' \
+            --marker-end '<!-- help-output: end -->\n'
 
   tests:
     name: "Run tests"
@@ -61,12 +67,12 @@ jobs:
     timeout-minutes: 2
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Setup python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
-          python-version: ${{ needs.prepare.outputs.version }}
+          python-version: ${{ needs.prepare.outputs.py_version }}
 
       - name: Install dev dependencies
         run: |

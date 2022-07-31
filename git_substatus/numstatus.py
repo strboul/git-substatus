@@ -1,6 +1,10 @@
-from git_substatus.base import *
+from collections.abc import Callable, Iterator
+from typing import TypedDict
 
-TypeText = TypedDict("TypeText", {"singular": str, "plural": str})
+
+class TypeText(TypedDict):
+    singular: str
+    plural: str
 
 
 class NumStatus:
@@ -9,12 +13,12 @@ class NumStatus:
     e.g. stash, worktree etc.
     """
 
-    def __init__(self, repos: Tuple[str, ...], txt: TypeText, fun_get_num: Callable):
+    def __init__(self, repos: tuple[str, ...], txt: TypeText, fun_get_num: Callable):
         self.repos = repos
         self.txt = txt
         self.fun_get_num = fun_get_num
 
-    def get_num(self) -> Tuple[str, ...]:
+    def get_num(self) -> tuple[str, ...]:
         nums = tuple(self.__num_iterator())
         return nums
 

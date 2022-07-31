@@ -1,9 +1,10 @@
-from git_substatus.base import *
+import os
+
 from git_substatus.utils import run_git_command
 
 
 class Fetch:
-    def __init__(self, repos: Tuple[str, ...]):
+    def __init__(self, repos: tuple[str, ...]):
         self.repos = repos
 
     def do_fetch(self) -> bool:
@@ -28,7 +29,7 @@ class Fetch:
         print(" ✅")
         return True
 
-    def __get_remote_url(self, path) -> Dict:
+    def __get_remote_url(self, path) -> dict:
         cmd = run_git_command(path, ["config", "--get", "remote.origin.url"])
         cmd["output"] = cmd["output"].strip("\n")
         return cmd

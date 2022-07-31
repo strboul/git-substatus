@@ -25,7 +25,15 @@ install:
 	pip install .
 
 
-test: unittest clean
+test: gentest unittest clean
+
+
+coverage: gentest runcoverage clean
+
+
+gentest:
+	$(call echo_section,"generate test repos")
+	./tests/generate_test_repos.sh
 
 
 unittest:
@@ -39,7 +47,7 @@ typecheck:
 	mypy --pretty --show-error-context --show-error-codes git_substatus
 
 
-coverage:
+runcoverage:
 	$(call check_pip_module,"coverage")
 	$(call echo_section,"measuring code coverage")
 	coverage run --source git_substatus -m unittest && coverage report

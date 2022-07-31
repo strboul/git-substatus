@@ -1,5 +1,9 @@
+import os
+import unittest
+
 from git_substatus.gitsubstatus import GitSubstatusApplication
-from tests.base import *
+
+from .base import TestBase
 
 
 class TestGitsubstatus(TestBase):
@@ -23,10 +27,8 @@ class TestGitsubstatus(TestBase):
             }
         )
 
-        with self.assertRaises(SystemExit) as cm:
+        with self.assertRaises(ValueError):
             gitsubstatus.exec()
-
-        self.assertEqual(cm.exception.code, 1)
 
 
 if __name__ == "__main__":

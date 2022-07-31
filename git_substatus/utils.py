@@ -1,35 +1,31 @@
-from git_substatus.base import *
+import os
+import subprocess
+from collections.abc import Iterator
+from typing import Any
 
 
-def exit_program(message: str):
-    """
-    Sends SIGHUP 1 signal and exits the program.
-    """
-    raise SystemExit(fancy_text(message, "red"))
-
-
-def list_directories(path: str) -> List[str]:
+def list_directories(path: str) -> list[str]:
     """
     List only directories in a path.
     """
     return next(os.walk(path))[1]
 
 
-def flatten(lst: Union[List[Any], Tuple[Any, ...]]) -> Iterator[Any]:
+def flatten(items: list[Any] | tuple[Any, ...]) -> Iterator[Any]:
     """
     Flatten a nested list or tuple.
 
     Examples:
     list(flatten(["a", "b", [1, "z"]]))
     """
-    for l in lst:
-        if isinstance(l, (list, tuple)):
-            yield from flatten(l)
+    for item in items:
+        if isinstance(item, (list, tuple)):
+            yield from flatten(item)
         else:
-            yield l
+            yield item
 
 
-def sort_by_basename(arr: Tuple[str, ...]) -> Tuple[str, ...]:
+def sort_by_basename(arr: tuple[str, ...]) -> tuple[str, ...]:
     """
     Sort a tuple containing paths by the basename.
 
@@ -43,7 +39,7 @@ def sort_by_basename(arr: Tuple[str, ...]) -> Tuple[str, ...]:
     return sorted_arr
 
 
-def fancy_text(text: str, color: str, styles: Optional[Tuple[str, ...]] = None) -> str:
+def fancy_text(text: str, color: str, styles: tuple[str, ...] | None = None) -> str:
     """
     Prints string with ANSI colors on terminal.
     """
@@ -100,10 +96,10 @@ def check_git_installed():
 
     cmd = shutil.which("git")
     if cmd is None:
-        exit_program("git is not found")
+        raise SystemError("Error: git is not found")
 
 
-def run_git_command(path: str, what: List[str]) -> Dict:
+def run_git_command(path: str, what: list[str]) -> dict:
     """
     Run a git command in a path.
 
@@ -123,29 +119,19 @@ def run_git_command(path: str, what: List[str]) -> Dict:
 
 
 def display_table(cols):
-    def get_max_char_width(x: Tuple[str, ...]) -> int:
-        return max(map(len, x))
+    # get highest character length from each column
+    max_length = []
+    for col in cols:
+        highest = len(max(col, key=len))
+        max_length.append(highest)
 
-    def nchar_format(x: str, max_char: int) -> str:
-        fmt_txt = "{:" + str(max_char) + "}"
-        return fmt_txt.format(x)
+    rows = zip(*cols)
 
-    def pad_chars(char):
-        max_char_width = get_max_char_width(char)
-        return tuple(map(lambda x: nchar_format(x, max_char_width), char))
-
-    def get_padded_cols(cols):
-        return tuple(map(pad_chars, cols))
-
-    padded_cols = get_padded_cols(cols)
-
-    def print_cols(padded_cols, row_prefix="\u2022"):
-        len_rows = len(padded_cols[0])
-        len_cols = len(padded_cols)
-        for i in range(len_rows):
-            row = tuple(zip(*padded_cols))[i]
-            fmt_txt = row_prefix + (" {}  " * len_cols).rstrip()
-            print(fmt_txt.format(*row))
-        return None
-
-    print_cols(padded_cols)
+    for row in rows:
+        print("\u2022", end=" ")
+        for i, _ in enumerate(row):
+            value = row[i]
+            max_len = max_length[i]
+            fmt_value = value.ljust(max_len)
+            print(fmt_value, end="  ")
+        print("")

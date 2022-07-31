@@ -1,4 +1,3 @@
-from git_substatus.base import *
 from git_substatus.branch import Branch
 from git_substatus.directory import Directory
 from git_substatus.fetch import Fetch
@@ -10,22 +9,23 @@ from git_substatus.worktree import Worktree
 
 
 class GitSubstatusApplication:
-    def __init__(self, args: Dict[str, str]):
+    def __init__(self, args: dict[str, str]):
         self.args = args
 
     def exec(self) -> int:
         """
         The main function to execute git-substatus with given arguments.
         """
-        directory = Directory(self.args["path"], bool(self.args["include_hidden"]))
+        directory = Directory(
+            self.args["path"], include_hidden=bool(self.args["include_hidden"])
+        )
         sub_dirs = directory.get_sub_directories()
 
         repository = Repository(sub_dirs)
         git_repos = repository.get_git_repository_paths()
 
-        if len(git_repos) is 0:
-            print("no sub git repositories found", file=sys.stderr)
-            sys.exit(1)
+        if len(git_repos) == 0:
+            raise ValueError("no sub git repositories found")
 
         if self.args["fetch"]:
             fetch = Fetch(git_repos)
@@ -59,11 +59,8 @@ class GitSubstatusApplication:
             return tuple(fancy_text(el, **aesthetics) for el in elem)
 
         repos = color_comp(repos, color="blue", styles=("bold",))
-
         branch_heads = color_comp(branch_heads, color="white", styles=("underline",))
-
         stashes = color_comp(stashes, color="cyan")
-
         worktrees = color_comp(worktrees, color="magenta")
 
         def colorize_status(s):
