@@ -1,19 +1,21 @@
-from git_substatus.base import *
+import os
+from collections.abc import Iterator
+
 from git_substatus.utils import run_git_command
 
 
 class Repository:
-    def __init__(self, dirs: Tuple[str, ...]):
+    def __init__(self, dirs: tuple[str, ...]):
         self.dirs = dirs
 
-    def get_git_repository_paths(self) -> Tuple[str, ...]:
+    def get_git_repository_paths(self) -> tuple[str, ...]:
         """
         Get the git repositories in a directory.
         """
         sub_git_repos = tuple(self.__git_repositories())
         return sub_git_repos
 
-    def get_repo_names(self) -> Tuple[str, ...]:
+    def get_repo_names(self) -> tuple[str, ...]:
         sub_git_repos = tuple(self.__git_repositories())
         repo_names = tuple(os.path.basename(repo) for repo in sub_git_repos)
         return repo_names

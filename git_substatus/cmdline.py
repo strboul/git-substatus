@@ -1,11 +1,11 @@
 import argparse
+import os
 import textwrap
+from typing import Union
 
 from git_substatus import __version__
-from git_substatus.base import *
-from git_substatus.utils import exit_program
 
-CmdArgs = Union[Dict[str, str], Dict[str, bool], Dict[str, bool]]
+CmdArgs = Union[dict[str, str], dict[str, bool], dict[str, bool]]
 
 
 class CmdLine:
@@ -18,8 +18,8 @@ class CmdLine:
             prog="git-substatus",
             description=CmdLine.__style_triple_quoted_str(
                 """
-                See subfolders' git status
-                ===========================
+                See subdirectories' git status
+                ==============================
 
                 The output consists of four columns:
 
@@ -88,7 +88,7 @@ class CmdLine:
             if os.path.exists(expanded_path):
                 settled_path_arg = expanded_path
             else:
-                exit_program(
+                raise FileNotFoundError(
                     f"Error: cannot find the specified directory: '{expanded_path}'"
                 )
 

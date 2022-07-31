@@ -1,11 +1,15 @@
+import os
+import unittest
+
 from git_substatus.directory import Directory
 from git_substatus.repository import Repository
-from tests.base import *
+
+from .base import TestBase
 
 
 class TestRepository(TestBase):
     def test_get_git_repositories(self):
-        directory = Directory(self.temp_test_dir, False)
+        directory = Directory(self.temp_test_dir, include_hidden=False)
         sub_dirs = directory.get_sub_directories()
         repository = Repository(sub_dirs)
         git_repos = repository.get_git_repository_paths()
@@ -23,7 +27,7 @@ class TestRepository(TestBase):
         )
 
     def test_get_git_repositories_include_hidden(self):
-        directory = Directory(self.temp_test_dir, True)
+        directory = Directory(self.temp_test_dir, include_hidden=True)
         sub_dirs = directory.get_sub_directories()
         repository = Repository(sub_dirs)
         git_repos = repository.get_git_repository_paths()
@@ -42,7 +46,7 @@ class TestRepository(TestBase):
         )
 
     def test_get_repo_names(self):
-        directory = Directory(self.temp_test_dir, False)
+        directory = Directory(self.temp_test_dir, include_hidden=False)
         sub_dirs = directory.get_sub_directories()
         repository = Repository(sub_dirs)
         repo_names = repository.get_repo_names()

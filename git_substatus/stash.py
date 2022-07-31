@@ -1,4 +1,3 @@
-from git_substatus.base import *
 from git_substatus.numstatus import NumStatus
 from git_substatus.utils import run_git_command
 

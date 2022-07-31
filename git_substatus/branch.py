@@ -1,12 +1,13 @@
-from git_substatus.base import *
+from collections.abc import Iterator
+
 from git_substatus.utils import run_git_command
 
 
 class Branch:
-    def __init__(self, repos: Tuple[str, ...]):
+    def __init__(self, repos: tuple[str, ...]):
         self.repos = repos
 
-    def get_branch_head(self) -> Tuple[str, ...]:
+    def get_branch_head(self) -> tuple[str, ...]:
         """
         Get the current branch head.
         """

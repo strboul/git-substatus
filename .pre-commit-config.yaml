@@ -30,12 +30,22 @@ repos:
     hooks:
       - id: isort
         description: "A Python utility / library to sort imports."
-        name: "[py] isort"
         args: ["--profile", "black"]
 
 -   repo: https://github.com/psf/black
-    rev: 21.11b1
+    rev: 22.6.0
     hooks:
     -   id: black
-        description: "The uncompromising Python code formatter"
         name: "[py] black"
+
+-   repo: https://github.com/PyCQA/flake8
+    rev: 4.0.1
+    hooks:
+    -   id: flake8
+        args: ["--ignore=E501"] # E501: line too long (conflicts with black)
+
+-   repo: https://github.com/asottile/pyupgrade
+    rev: v2.37.3
+    hooks:
+    -   id: pyupgrade
+        args: ["--py310-plus"]

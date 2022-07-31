@@ -2,6 +2,7 @@
 # This script creates dummy git repositories, which each of them can represent
 # a different test case. It is meant to be called from the unit tests but it
 # can also be called independently.
+set -x
 INITIAL_WD="$(pwd)"
 TESTS_FOLDER="generated-test-proj-dir"
 TESTS_DIR="tests"
@@ -11,6 +12,7 @@ if [ -d "$TESTS_DIR_FOLDER_PATH" ]; then
 fi
 mkdir -p "$TESTS_DIR_FOLDER_PATH" && cd "$TESTS_DIR_FOLDER_PATH" || exit
 set_local_git_config() {
+  git config --local init.defaultBranch master
   git config --local user.email "test@example.com"
   git config --local user.name "git-substatus Test User"
 }
@@ -84,14 +86,14 @@ cd .. || exit
 # a merge conflict occurred
 # --------------------------------------------------------
 mkdir -p projC && cd projC || exit
-touch code.py && echo "print('Hello, world!')" > code.py
+touch code.py && echo "'Hello, world!'" > code.py
 git init && set_local_git_config
 git add -A && git commit -m "Implement code"
 git checkout -b new-branch
-echo "print('Hi there')" > code.py
+echo "'Hi there'" > code.py
 git add -A && git commit -m "Change to hi"
 git checkout master
-echo "print('The quick brown fox jumps over the lazy dog')" > code.py
+echo "'The quick brown fox jumps over the lazy dog'" > code.py
 git add -A && git commit -m "Change to the quick brown fox"
 git merge new-branch
 cd .. || exit
@@ -114,7 +116,7 @@ mkdir -p projE && cd projE || exit
 git init && set_local_git_config
 touch file.txt
 git add -A && git commit -m "Initial commit"
-git checkout -b branchie
+git checkout -b work
 touch file2.txt
 git add -A && git commit -m "Add file"
 cd .. || exit

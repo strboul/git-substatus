@@ -17,7 +17,7 @@ jobs:
       py_version: ${{ steps.versions.outputs.py_version }}
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
 
     - name: Get versions
       id: versions
@@ -34,32 +34,6 @@ jobs:
       env:
         tag_ref: ${{ github.ref_name }}
 
-  release_github:
-    name: "Create release on Github"
-    needs: [ prepare ]
-    runs-on: ubuntu-latest
-    timeout-minutes: 2
-
-    steps:
-      - uses: actions/checkout@v2
-
-      - name: Create release
-        uses: softprops/action-gh-release@v1
-        with:
-          body: |
-            Install this specific release with:
-
-            - PyPI
-
-            ```bash
-            pip install git-substatus==${{ needs.prepare.outputs.version }}
-            ```
-            - Dockerhub
-
-            ```bash
-            docker run --rm -t -v "$(pwd)":/"$(pwd)" -w "$(pwd)" strboul/git-substatus:${{ needs.prepare.outputs.version }}
-            ```
-
   publish_pypi:
     name: "Publish to PyPI (https://pypi.org/project/git-substatus/)"
     needs: [ prepare ]
@@ -67,10 +41,10 @@ jobs:
     timeout-minutes: 2
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
 
     - name: Setup Python
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v4
       with:
         python-version: ${{ needs.prepare.outputs.py_version }}
 
@@ -85,7 +59,7 @@ jobs:
         python -m build --sdist --wheel --outdir dist/
 
     - name: Publish to PyPI
-      uses: pypa/gh-action-pypi-publish@master
+      uses: pypa/gh-action-pypi-publish@release/v1.5.1
       with:
         password: ${{ secrets.PYPI_API_TOKEN }}
 
@@ -97,13 +71,12 @@ jobs:
 
     steps:
       - name: Login to DockerHub
-        uses: docker/login-action@v1
+        uses: docker/login-action@v2
         with:
           username: strboul
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Build and push
-        id: docker_build
         uses: docker/build-push-action@v2
         with:
           push: true
@@ -112,3 +85,29 @@ jobs:
           tags: |
             strboul/git-substatus:${{ needs.prepare.outputs.version }}
             strboul/git-substatus:latest
+
+  release_github:
+    name: "Create release on Github"
+    needs: [ prepare, publish_pypi, publish_dockerhub ]
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Create release
+        uses: softprops/action-gh-release@v1
+        with:
+          body: |
+            Install this release with:
+
+            - [PyPI](https://pypi.org/project/git-substatus/)
+
+            ```sh
+            pip install git-substatus==${{ needs.prepare.outputs.version }}
+            ```
+            - [Dockerhub](https://hub.docker.com/r/strboul/git-substatus)
+
+            ```sh
+            docker run --rm -t -v "$(pwd)":/"$(pwd)" -w "$(pwd)" strboul/git-substatus:${{ needs.prepare.outputs.version }}
+            ```

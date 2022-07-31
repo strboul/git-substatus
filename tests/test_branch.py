@@ -1,12 +1,15 @@
+import unittest
+
 from git_substatus.branch import Branch
 from git_substatus.directory import Directory
 from git_substatus.repository import Repository
-from tests.base import *
+
+from .base import TestBase
 
 
 class TestBranch(TestBase):
     def test_get_branch_head(self):
-        directory = Directory(self.temp_test_dir, False)
+        directory = Directory(self.temp_test_dir, include_hidden=False)
         sub_dirs = directory.get_sub_directories()
         repository = Repository(sub_dirs)
         git_repos = repository.get_git_repository_paths()
@@ -19,7 +22,7 @@ class TestBranch(TestBase):
                 "master",
                 "master",
                 "new-branch",
-                "branchie",
+                "work",
                 "master",
                 "master",
             ),

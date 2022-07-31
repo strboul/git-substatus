@@ -1,4 +1,3 @@
-from git_substatus.base import *
 from git_substatus.utils import run_git_command
 
 
@@ -7,7 +6,7 @@ class StatusDetails:
     path: str
 
     @classmethod
-    def get_status_details(cls, path: str) -> List[str]:
+    def get_status_details(cls, path: str) -> list[str]:
         cls.path = path
 
         details_text = cls.__get_details_text()
@@ -26,14 +25,14 @@ class StatusDetails:
 
 class StatusChanges:
 
-    status_details: List[str]
-    status_codes: Tuple[str, ...]
-    status_count: Dict[str, int]
-    mapped_status_count: Dict[str, int]
+    status_details: list[str]
+    status_codes: tuple[str, ...]
+    status_count: dict[str, int]
+    mapped_status_count: dict[str, int]
     status_changes_txt: str
 
     @classmethod
-    def get_status_changes(cls, status_details: List[str]) -> str:
+    def get_status_changes(cls, status_details: list[str]) -> str:
 
         cls.status_details = status_details
 
@@ -45,13 +44,13 @@ class StatusChanges:
         return cls.status_changes_txt
 
     @classmethod
-    def __get_status_codes(cls) -> Tuple[str, ...]:
+    def __get_status_codes(cls) -> tuple[str, ...]:
         statuses = cls.status_details[1:]
         codes = tuple(map(lambda l: l.strip().partition(" ")[0], statuses))
         return codes
 
     @classmethod
-    def __get_mapped_status_count(cls) -> Dict[str, int]:
+    def __get_mapped_status_count(cls) -> dict[str, int]:
         """
         All status short format codes
         Reference: <https://git-scm.com/docs/git-status>
@@ -100,8 +99,8 @@ class StatusChanges:
         def status_count_gen():
             for k, v in cls.status_count.items():
 
-                if not k in status_details.keys():
-                    raise KeyError(f'Unknown status mapping: "{k}"')
+                if k not in status_details.keys():
+                    raise KeyError(f'Error: unknown status mapping: "{k}"')
 
                 mapped_count = (status_details.get(k), v)
                 yield mapped_count
@@ -109,7 +108,7 @@ class StatusChanges:
         return dict(status_count_gen())
 
     @classmethod
-    def __get_status_count(cls) -> Dict[str, int]:
+    def __get_status_count(cls) -> dict[str, int]:
         from collections import Counter
 
         count_codes = Counter(cls.status_codes)
@@ -126,10 +125,10 @@ class StatusChanges:
 
 class StatusAheadBehind:
 
-    status_details: List[str]
+    status_details: list[str]
 
     @classmethod
-    def get_ahead_behind(cls, status_details: List[str]) -> str:
+    def get_ahead_behind(cls, status_details: list[str]) -> str:
 
         cls.status_details = status_details
 
@@ -139,10 +138,10 @@ class StatusAheadBehind:
 
 
 class Status:
-    def __init__(self, repos: Tuple[str, ...]):
+    def __init__(self, repos: tuple[str, ...]):
         self.repos = repos
 
-    def get_status(self) -> Tuple[str, ...]:
+    def get_status(self) -> tuple[str, ...]:
         """
         Main method to get the git status from the given directories.
         """

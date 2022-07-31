@@ -1,5 +1,6 @@
-from git_substatus.utils import *
-from tests.base import *
+import unittest
+
+from git_substatus.utils import fancy_text, flatten
 
 
 class TestFancyText(unittest.TestCase):
