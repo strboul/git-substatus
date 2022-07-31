@@ -9,7 +9,7 @@ def readme():
 
 
 def get_version(variable):
-    cmd = ["./get_version.sh", variable]
+    cmd = ["./scripts/get_version.sh", variable]
     run = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL)
     return run.stdout.decode("utf-8").strip("\n")
 
@@ -17,13 +17,13 @@ def get_version(variable):
 setup(
     name="git-substatus",
     author="Metin Yazici",
-    version=get_version("version"),
+    version=get_version("__version__"),
     description="Display the 'git status' in sub-directories",
     long_description=readme(),
     long_description_content_type="text/markdown",
     keywords="git sub status fetch directory folder",
     url="https://github.com/strboul/git-substatus",
-    python_requires=f">={get_version('py_version')}",
+    python_requires=f">={get_version('__py_version__')}",
     license="MIT",
     packages=["git_substatus"],
     entry_points={
@@ -39,6 +39,6 @@ setup(
         "Operating System :: MacOS",
         "Operating System :: Microsoft :: Windows",
         "Operating System :: POSIX :: Linux",
-        f"Programming Language :: Python :: {get_version('py_version')}+",
+        f"Programming Language :: Python :: {get_version('__py_version__')}",
     ],
 )

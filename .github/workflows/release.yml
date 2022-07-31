@@ -22,8 +22,8 @@ jobs:
     - name: Get versions
       id: versions
       run: |
-        version="$(./get_version.sh __version__)"
-        py_version="$(./get_version.sh __py_version__)"
+        version="$(./scripts/get_version.sh __version__)"
+        py_version="$(./scripts/get_version.sh __py_version__)"
         # check the tag ref is the same as package version:
         if [ "v${version}" != "$tag_ref" ]; then
           echo "::error ::fatal! version not matching with tag"
@@ -59,7 +59,7 @@ jobs:
         python -m build --sdist --wheel --outdir dist/
 
     - name: Publish to PyPI
-      uses: pypa/gh-action-pypi-publish@release/v1.5.1
+      uses: pypa/gh-action-pypi-publish@release/v1
       with:
         password: ${{ secrets.PYPI_API_TOKEN }}
 
