@@ -51,8 +51,7 @@ jobs:
 
       - name: Check if help text in README is up-to-date
         run: |
-          # TODO: change branch name
-          wget https://raw.githubusercontent.com/strboul/dotfiles/v0.4.4/bin/command-output-in-file
+          wget https://raw.githubusercontent.com/strboul/dotfiles/master/bin/command-output-in-file
           chmod +x command-output-in-file
           ./command-output-in-file \
             --file "README.md" \
